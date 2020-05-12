@@ -34,10 +34,10 @@ def checkForForageSpawns(seed,printOutput = False):
     backwoods = Location.createBackwoods("1.3")
     town = Location.createTown("1.3")
     forest = Location.createForest("1.3")
-
+    
     busstop.processDay(seed, 29 )
     if printOutput:
-        print(busstop.items)
+        print("busstop" + str(busstop.items))
     grape = False
     sweetPea = False
     spice = False
@@ -61,7 +61,7 @@ def checkForForageSpawns(seed,printOutput = False):
 
     town.processDay(seed,29)
     if printOutput:
-        print(town.items)
+        print("town" + str(town.items))
     for item in town.items.items():
         if item[1] == "Sweet Pea":
             sweetPea = True
@@ -71,7 +71,7 @@ def checkForForageSpawns(seed,printOutput = False):
 
     busstop.processDay(seed, 57)
     if printOutput:
-        print(busstop.items)
+        print("busstop" + str(busstop.items))
     plum = False
     hazelnut = False
     for item in busstop.items.items():
@@ -88,7 +88,7 @@ def checkForForageSpawns(seed,printOutput = False):
 
     forest.processDay(seed, 57)
     if printOutput:
-        print(forest.items)
+        print("forest" + str(forest.items))
     mushroom = False
     blackberry = False
     for item in forest.items.items():
@@ -108,7 +108,7 @@ def checkForForageSpawns(seed,printOutput = False):
 
     town.processDay(seed, 57)
     if printOutput:
-        print(town.items)
+        print("town" + str(town.items))
     for item in town.items.items():
         if item[1] == "Blackberry":
             blackberry = True
@@ -119,7 +119,7 @@ def checkForForageSpawns(seed,printOutput = False):
 
     busstop.processDay(seed, 90)
     if printOutput:
-        print(busstop.items)
+        print("busstop" + str(busstop.items))
     fruit = False
     crocus = False
     for item in busstop.items.items():

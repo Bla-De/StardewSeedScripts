@@ -67,6 +67,13 @@ class Location():
             if localDaysPlayed < 4:
                 self.calculateSpawns(seed,localDaysPlayed);
 
+def randomTest():
+    seed = 665917905
+    rand = CSRandom(seed)
+
+    for i in range(100):
+        print(rand.Sample())
+
 def createBusstop(version="1.4"):
     location = Location("Busstop")
     location.width = 35;
@@ -206,31 +213,34 @@ def createTown(version="1.4"):
 
 
 if __name__ == '__main__':
+    randomTest()
+
+    if False:
     
-    town = createTown()
-    busstop = createBusstop()
-    backwoods = createBackwoods()
-    mountain = createMountain()
-    forest = createForest()
+        town = createTown()
+        busstop = createBusstop()
+        backwoods = createBackwoods()
+        mountain = createMountain()
+        forest = createForest()
 
-    seed = 183498
-#    seed = 241146767
-    daysplayed = 57
+        seed = 183498
+    #    seed = 241146767
+        daysplayed = 57
 
-    busstop.processDay(seed, daysplayed)
-    print("busstop " + str(busstop.items))
+        busstop.processDay(seed, daysplayed)
+        print("busstop " + str(busstop.items))
 
-    backwoods.processDay(seed, daysplayed)
-    print("backwoods " + str(backwoods.items))
+        backwoods.processDay(seed, daysplayed)
+        print("backwoods " + str(backwoods.items))
 
-    mountain.processDay(seed, daysplayed)
-    print("mountain " + str(mountain.items))
+        mountain.processDay(seed, daysplayed)
+        print("mountain " + str(mountain.items))
 
-    town.processDay(seed, daysplayed)
-    print("town " + str(town.items))
+        town.processDay(seed, daysplayed)
+        print("town " + str(town.items))
 
-    forest.processDay(seed, daysplayed)
-    print("forest " + str(forest.items))
+        forest.processDay(seed, daysplayed)
+        print("forest " + str(forest.items))
 
 
 #    for seed in range(999999999):

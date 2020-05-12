@@ -96,6 +96,8 @@ class CSRandom():
 		locINextp = 1 if (locINextp+1 >= 56) else locINextp+1
 		
 		retVal = self._seedarray[locINext]-self._seedarray[locINextp]
+		if retVal > self.MAX_INT:
+			retVal -= self.MAX_INT
 		if retVal == self.MAX_INT: 
 			retVal -= 1
 		if retVal < 0:

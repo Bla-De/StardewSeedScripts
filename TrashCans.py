@@ -1,6 +1,7 @@
-from CSRandom import CSRandomLite
+from CSRandom import CSRandomLite,CSRandom
 from ObjectInfo import ObjectInfo
 from Utility import dayToYSD
+import SeedUtility
 GarbageLocations = { 
 							0 : [[13,86],'Jodi'],	# Jodi
 							1 : [[19,89],'Emily'],	# Emily
@@ -8,30 +9,29 @@ GarbageLocations = {
 							3 : [[108,91],'Museum'],# Museum
 							4 : [[97,80],'Clint'],	# Clint
 							5 : [[47,70],'Gus'],		# Gus
-							6 : [[52,63],'George']	# George
+							6 : [[52,63],'George'],	# George
+							7 : [[110,56],'Joja'] #Joja
 							}
 seasonDict = {0:'Spring', 1:'Summer', 2:'Fall', 3:'Winter'}
 
 
 def randomItemFromSeason(gameID, day, seedAdd, furnace=False):
-	season = (day-1) // 28 % 4
-	rand = CSRandomLite(gameID + day + seedAdd)
-	source = [68, 66, 78, 80, 86, 152, 167, 153, 420]
+	return SeedUtility.randomItemFromSeason(gameID, day, seedAdd, furnace)
 
-	source.extend({
-		0 : [16,18,20,22,129,131,132,136,137,142,143,145,147,148,152,167],
-		1 : [128,130,131,132,136,138,142,144,145,146,149,150,155,396,398,400,402], 
-		2 : [404,406,408,410,129,131,132,136,137,139,140,142,143,148,150,154,155],
-		3 : [412,414,416,418,130,131,132,136,140,141,143,144,146,147,150,151,154]
-		}[season])
-	if furnace:
-		source.extend([334,335,336,338])
-	r = rand.Next(len(source))
-	return source[r]
-
-def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.2):
-	rand = CSRandomLite(gameID//2 + day + 777 + index)
-	if rand.Sample() < luck:
+def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4"):
+	if version == "1.4":
+		rand = CSRandom(gameID // 2 + day + 777 + index * 77)
+		num2 = rand.Next(0,100)
+		for index2 in range(num2):
+			rand.Sample()
+		num2 = rand.Next(0,100)
+		for index2 in range(num2):
+			rand.Sample()
+		#rand.Sample()
+		#rand.Sample()
+	else:
+		rand = CSRandomLite(gameID//2 + day + 777 + index)
+	if rand.Sample() < luck + 0.2:
 		r = rand.Next(10)
 		if r == 6:
 			ps = randomItemFromSeason(gameID, day, x*653+y*777, furnace)
@@ -47,34 +47,45 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.2):
 					 7 : 403,
 					 9 : 153
 					}[r]
-		if index == 3 and rand.Sample() < luck:
+		if index == 3 and rand.Sample() < luck + 0.2:
 			ps = 535
 			if rand.Sample() < 0.05:
 				ps = 749
-		if index == 4 and rand.Sample() < luck:
+		if index == 4 and rand.Sample() < luck + 0.2:
 			ps = 378 + rand.Next(3)*2
-		if index == 5 and rand.Sample() < luck:
+			if version == "1.4":
+				rand.Next(1,5)
+		if index == 5 and rand.Sample() < luck + 0.2:
 			ps = 196 # meals are complicated
 			return 'DishOfTheDay'
-		if index == 6 and rand.Sample() < luck:
+		if index == 6 and rand.Sample() < luck + 0.2:
 			ps = 223
-		return ObjectInfo[ps].split('/')[0]
+		if index == 7 and rand.Sample() < 0.2:
+			ps = 167
+		return ps
 	return None
+
+def checkAllTrash(gameID, day, furnace=False, luck=0.2, version = "1.4"):
+	results = set()
+	for i in range(8):
+		can = GarbageLocations[i]
+		results.add(checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version))
+	return results
 
 if __name__ == '__main__':
 	import sys
 	if len(sys.argv) >= 2:
 		gameID = int(sys.argv[1])
 	else:
-		gameID = 143594438
-	for day in range(1,112+1):
+		gameID = 20992
+	for day in range(1,28):
 		flag = False
 		Cans = dayToYSD(day) + "\n"
-		for i in range(7):
+		for i in range(8):
 			can = GarbageLocations[i]
-			item = checkTrash(gameID,day,i,can[0][0],can[0][1],day > 5)
+			item = checkTrash(gameID,day,i,can[0][0],can[0][1],False,0.016)
 			if item is not None:
 				flag = True
-				Cans = Cans + ("\t %s : %s\n" % (can[1],item))
+				Cans = Cans + ("\t %s : %s\n" % (can[1],SeedUtility.getItemFromIndex(item)))
 		if flag:
 			print(Cans)

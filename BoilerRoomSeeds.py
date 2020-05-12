@@ -6,9 +6,9 @@ def findBoilerRoomSeed():
     mountain = Location.createMountain()
     forest = Location.createForest()
     busstop = Location.createBusstop()
-    for seed in range(16269986,999999999):
-        if seed % 10000 == 0:
-            print("searching: " + str(seed))
+    for seed in range(20083873,999999999):
+        #if seed % 100000 == 0:
+        #    print("searching: " + str(seed))
         #if SeedUtility.dailyLuck(seed,18,17) > 0.099 and not SeedUtility.doesSeedHaveMonsterFloorMines(seed,18,50):
             #backwoods.processDay(seed,15)
             #mountain.processDay(seed,15)
@@ -94,7 +94,8 @@ def findEarlyCart(seed):
 
 def analyseSeeds():
     seeds = [
-(10373125 ,13,26)]
+(14542796 ,31,32),
+(14542796 ,33,34)]
     for seed in seeds:
         analyseSeed(seed[0],seed[1])
         analyseSeed(seed[0],seed[2])
@@ -118,8 +119,10 @@ def analyseSeed(seed,day):
      #   print(str(lday) + " " + str(SeedUtility.dailyLuck(seed, lday, lday-1)))
 
 if __name__ == '__main__':
-    findBoilerRoomSeed();
-    #analyseSeeds();
-    #for lday in range(5,19):
-    #    print(str(lday) + " " + str(SeedUtility.dailyLuck(10373125 , lday, lday-1)))
+    #findBoilerRoomSeed();
+    analyseSeeds();
+    #print(TravelingCart.getTravelingMerchantStock(53234174,21,"1.4"))
+    seed = 14542796
+    for lday in range(5,25):
+        print(str(lday) + " " + str(SeedUtility.dailyLuck(seed , lday, lday-1)) + " " + str(SeedUtility.doesSeedHaveMonsterFloorMines(seed,lday,21)))
   

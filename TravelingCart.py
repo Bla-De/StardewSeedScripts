@@ -1,18 +1,66 @@
 from itertools import chain
 import sys
 
-from ObjectInfo import ObjectInfo
-from CSRandom import CSRandom
+from ObjectInfo import ObjectInfo as oi
 from Utility import dayToYSD
 
+import json
+from itertools import chain
+from CSRandom import CSRandom as CSRandomSlow, CSRandomLite as CSRandomFast
+import time
+from collections import OrderedDict
+
+with open('ObjectInformation.json','r') as f:
+    ObjectInfo = json.load(f)['content']
+ObjectInfo = dict(zip(map(lambda x:int(x),ObjectInfo.keys()),map(lambda x: x.split('/'),ObjectInfo.values())))
+for key in ObjectInfo.keys():
+    ObjectInfo[key][1] = int(ObjectInfo[key][1])
+ObjectInfo[174][0] = 'Large EggW'
+ObjectInfo[182][0] = 'Large EggB'
+
+objectsOffLimits = [79, 158, 159, 160, 161, 162, 163, 261, 277, 279,
+                   305, 308, 326, 341, 413, 417, 437, 439, 447, 454, 
+                   460, 645, 680, 681, 682, 688, 689, 690, 774, 775,
+                   797, 798, 799, 800, 801, 802, 803, 807, 812]
+validObjects = set()
+for key,array in ObjectInfo.items():
+    if '-' in array[3] and array[1] > 0 and '-13' not in array[3] and 'Quest' != array[3] \
+        and 'Weeds' != array[0] and 'Minerals' not in array[3] and 'Arch' not in array[3]:
+        if key < 790 and key not in objectsOffLimits:
+            validObjects.add(key)
+
+ObjectIDFromName = dict(zip([obj[0] for obj in ObjectInfo.values()], ObjectInfo.keys()))
+
+def getTravelingMerchantStock_1_4(seed, CSRandom=CSRandomFast):
+    # check speed trial block below 
+    # CSRandomSlow is 60% slower but it will always work
+    # CSRandomFast can only call Next 100 times due to implementation
+    # It's way faster to try the fast random until it crashes and restart
+    # than it is to run the slow one by default across many seeds
+    try:
+        random = CSRandom(seed)
+        currentStock = dict()
+        for i in range(10):
+            num = random.Next(2, 790)
+            while True:
+                num = (num+1) % 790;
+                if num in validObjects:
+                    cost = max(random.Next(1,11)* 100, ObjectInfo[num][1]*random.Next(3,6))
+                    qty = 1 if not (random.Sample() < 0.1) else 5
+                    if num not in currentStock:
+                        currentStock[num] = [cost,qty]
+                        break
+        return currentStock
+    except:
+        # we must've hit over 100 random calls, need to revert to the slow version
+        return getTravelingMerchantStock_1_4(seed, CSRandomSlow)
 
 def getTravelingMerchantStock(gameID, dayNumber, version="1.4"):
-    def _invalid_idx(index,version="1.4"):
-        if version == "1.4":
-            invalid = True if index in [79, 158, 159, 160, 161, 162, 163, 277, 279, 305, 308, 326, 341, 413, 437, 439, 447, 454, 460, 645, 680, 681, 682,
-                                    688, 689, 690, 774, 775, 797, 798, 799, 800, 801, 802, 803, 807, 812] else False
-        else:
-          invalid = True if index in [158, 159, 160, 161, 162, 163, 326, 341, 413, 437, 439, 454, 460, 645, 681, 682,
+    if version == "1.4":
+        return getTravelingMerchantStock_1_4(gameID + dayNumber)
+
+    def _invalid_idx(index):
+        invalid = True if index in [158, 159, 160, 161, 162, 163, 326, 341, 413, 437, 439, 454, 460, 645, 681, 682,
                                     688, 689, 690, 774, 775] else False
         return invalid
 
@@ -29,15 +77,14 @@ def getTravelingMerchantStock(gameID, dayNumber, version="1.4"):
             index = (index+1) % 790
             if index not in ObjectInfo or _invalid_idx(index,version):
                 continue
-            strArray = ObjectInfo[index].split('/')
+            strArray = oi[index].split('/')
             if _invalid_str(strArray):
                 continue
-            if version=="1.4" and index in stockItems:
-                continue
+            price = max(rand.Next(1, 11)*100, int(strArray[1])*rand.Next(3, 6))
+            amount = 1 if (rand.Sample() > 0.1) else 5
             stockItems.add(index)
             break
-        stock[i] = [strArray[0], max(rand.Next(1, 11)*100, int(strArray[1])*rand.Next(3, 6)),
-                    1 if (rand.Sample() > 0.1) else 5]
+        stock[i] = [strArray[0], price, amount]
     return stock
 
 
@@ -108,4 +155,9 @@ def findBundleSeed():
 
 if __name__ == '__main__':
     #findBundleSeed()
-    print(getTravelingMerchantStock(242438631,5))
+    print(getTravelingMerchantStock(53234174,5))
+    print(getTravelingMerchantStock(53234174,7))
+    print(getTravelingMerchantStock(53234174,12))
+    print(getTravelingMerchantStock(53234174,14))
+    print(getTravelingMerchantStock(53234174,19))
+    print(getTravelingMerchantStock(53234174,21))
