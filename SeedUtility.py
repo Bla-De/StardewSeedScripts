@@ -1,9 +1,9 @@
-from CSRandom import CSRandomLite
+from CSRandom import CSRandomLite,CSRandom
 from ObjectInfo import ObjectInfo
 def dailyLuck(seed,daysPlayed,steps):
     #DailyLuck random is initialised before daysPlayed is incremented
     localDaysPlayed = daysPlayed - 1;
-    rand = CSRandomLite(seed//100 + localDaysPlayed * 10 + 1 + steps)
+    rand = CSRandomLite(int(seed/100) + localDaysPlayed * 10 + 1 + steps)
     dayOfMonth = ((localDaysPlayed-1) % 28) + 1
   #  for index in range(100):
   #      print( str( min(.10, rand.Next(-100, 101) / 1000) ) )
@@ -23,7 +23,7 @@ def dailyLuck(seed,daysPlayed,steps):
 def dishOfTheDay(seed,daysPlayed,steps):
     #DailyLuck random is initialised before daysPlayed is incremented
     localDaysPlayed = daysPlayed - 1;
-    rand = CSRandomLite(seed//100 + localDaysPlayed * 10 + 1 + steps)
+    rand = CSRandomLite(int(seed/100) + localDaysPlayed * 10 + 1 + steps)
     dayOfMonth = ((localDaysPlayed-1) % 28) + 1
   #  for index in range(100):
   #      print( str( min(.10, rand.Next(-100, 101) / 1000) ) )
@@ -43,14 +43,22 @@ def giantCrop(seed,daysPlayed,x,y, version="1.3"):
     return result < 0.01
 
 def oneTimeRandomGetDouble(a,b,c,d):
-    return (oneTimeRandomGetLong(a,b,c,d) >> 11) * 1.11022302462516E-16
+    result = oneTimeRandomGetLong(a,b,c,d)
+    result = result >> 11
+    result = result * 1.11022302462516e-16
+    return result
+
+def constrainToLong(number):
+    result = number & 0xffffffffffffffff
+    return result
 
 def oneTimeRandomGetLong(a,b,c,d):
-    num1 = ((( a ^ ( (b >> 14) |  b << 50)) + (( (c >> 31) |  c << 33) ^ ( (d >> 18) |  d << 46))) * 1911413418482053185);
-    num2 = (((( (a >> 30) |  a << 34) ^  c) + (( (b >> 32) |  b << 32) ^ ( (d >> 50) |  d << 14))) * 1139072524405308145);
-    num3 = (((( (a >> 49) |  a << 15) ^ ( (d >> 33) |  d << 31)) + ( b ^ ( (c >> 48) |  c << 16))) * 8792993707439626365);
-    num4 = (((( (a >> 17) |  a << 47) ^ ( (b >> 47) |  b << 17)) + (( (c >> 15) |  c << 49) ^  d)) * 1089642907432013597);
-    return (( num1 ^  num2 ^ ( (num3 >> 21) |  num3 << 43) ^ ( (num4 >> 44) |  num4 << 20)) * 2550117894111961111 + (( (num1 >> 20) |  num1 << 44) ^ ( (num2 >> 41) |  num2 << 23) ^ ( (num3 >> 42) |  num3 << 22) ^  num4) * 8786584852613159497 + (( (num1 >> 43) |  num1 << 21) ^ ( (num2 >> 22) |  num2 << 42) ^  num3 ^ ( (num4 >> 23) |  num4 << 41)) * 3971056679291618767);
+  
+    num1 = constrainToLong(((constrainToLong(a ^ (constrainToLong(b >> 14) | constrainToLong(b << 50)))) + ((constrainToLong(c >> 31) | constrainToLong(c << 33)) ^ (constrainToLong((d >> 18)) | constrainToLong(d << 46)))) * 1911413418482053185);
+    num2 = constrainToLong((((constrainToLong(a >> 30) | constrainToLong(a << 34)) ^ constrainToLong(c)) + ((constrainToLong(b >> 32) | constrainToLong(b << 32)) ^ (constrainToLong(d >> 50) | constrainToLong(d << 14)))) * 1139072524405308145);
+    num3 = constrainToLong((((constrainToLong(a >> 49) | constrainToLong(a << 15)) ^ (constrainToLong(d >> 33) | constrainToLong(d << 31))) + (constrainToLong(b) ^ (constrainToLong(c >> 48) | constrainToLong(c << 16)))) * 8792993707439626365);
+    num4 = constrainToLong((((constrainToLong(a >> 17) | constrainToLong(a << 47)) ^ (constrainToLong(b >> 47) | constrainToLong(b << 17))) + ((constrainToLong(c >> 15) | constrainToLong(c << 49)) ^ constrainToLong(d))) * 1089642907432013597);
+    return constrainToLong((constrainToLong(num1) ^ constrainToLong(num2) ^ (constrainToLong(num3 >> 21) | constrainToLong(num3 << 43)) ^ (constrainToLong(num4 >> 44) | constrainToLong(num4 << 20))) * 2550117894111961111 + ((constrainToLong(num1 >> 20) | constrainToLong(num1 << 44)) ^ (constrainToLong(num2 >> 41) | constrainToLong(num2 << 23)) ^ (constrainToLong(num3 >> 42) | constrainToLong(num3 << 22)) ^ constrainToLong(num4)) * 8786584852613159497 + ((constrainToLong(num1 >> 43) | constrainToLong(num1 << 21)) ^ (constrainToLong(num2 >> 22) | constrainToLong(num2 << 42)) ^ constrainToLong(num3) ^ (constrainToLong(num4 >> 23) | constrainToLong(num4 << 41))) * 3971056679291618767);
 
 def giantCropAmount(seed,daysPlayed,x,y):
     rand = CSRandomLite(seed + daysPlayed + x*7 + y*11)
@@ -66,7 +74,7 @@ def monsterFloor(seed,daysPlayed,level):
     if level % 40 == 19:
         return False
 
-    rand = CSRandomLite(seed//2+daysPlayed+level*100)
+    rand = CSRandomLite(int(seed/2)+daysPlayed+level*100)
     return rand.Sample() < 0.044
 
 def doesSeedHaveMonsterFloorMines(seed,daysPlayed,deepestFloor):
@@ -80,7 +88,7 @@ def unusualDarkFloor(seed,daysPlayed,level):
         return False
     if level % 40 > 30:
         return False
-    rand = CSRandomLite(daysPlayed * level + 4 * level + seed//2)
+    rand = CSRandomLite(daysPlayed * level + 4 * level + int(seed/2))
     if rand.Sample() < 0.3 and level > 2:
         return True
     if rand.Sample() < 0.15 and level > 5 and not level == 120:
@@ -96,7 +104,7 @@ def doesSeedHaveUnusualDarkFloor(seed,daysPlayed,deepestFloor):
 
 def nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4"):
     #Assume geodesCracked passed in is 0 based
-    rand = CSRandomLite(geodesCracked + 1 + seed // 2)
+    rand = CSRandomLite(geodesCracked + 1 + int(seed / 2))
     if version == "1.4":
         num1 = rand.Next(1,10)
         for index in range(num1):
@@ -177,7 +185,7 @@ def nightEvent(seed,daysPlayed):
     #Night events are based on the new day
     if daysPlayed==32:
         return None
-    rand = CSRandomLite(seed//2 + daysPlayed)
+    rand = CSRandomLite(int(seed/2) + daysPlayed)
     if rand.Sample() < 0.01:        
         if (daysPlayed -1) // 28 % 4 != 3:
             return "Fairy"
@@ -192,7 +200,7 @@ def nightEvent(seed,daysPlayed):
         return "Owl"
 
 def uniqueKrobusStock(seed,daysPlayed):
-    rand = CSRandomLite(seed//2 + daysPlayed)
+    rand = CSRandomLite(int(seed/2) + daysPlayed)
     dayOfWeek = daysPlayed % 7
     if dayOfWeek == 3:
         return rand.Next(698,709)
@@ -204,10 +212,14 @@ def uniqueKrobusStock(seed,daysPlayed):
     return None
 
 
-def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False):
+def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False,recipesKnown=1,mineFloor=0):
     season = (day-1) // 28 % 4
-    rand = CSRandomLite(gameID + day + seedAdd)
+    rand = CSRandom(gameID + day + seedAdd)
     source = [68, 66, 78, 80, 86, 152, 167, 153, 420]
+    if forQuest and mineFloor > 40:
+        source.extend([62,70,72,84,422])
+    if forQuest and mineFloor > 80:
+        source.extend([64,60,82])
     if furnace:
         source.extend([334,335,336,338])
     source.extend({
@@ -216,26 +228,69 @@ def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False):
 		2 : [404,406,408,410,129,131,132,136,137,139,140,142,143,148,150,154,155,269],
 		3 : [412,414,416,418,130,131,132,136,140,141,144,146,147,150,151,154,269]
 		}[season])
-    if forQuest and rand.Sample() >= 0.4:
-        source.extend([194])
+    if forQuest:
+        for recipe in range(recipesKnown):
+            #Random called for cooking recipes
+            rand.Sample()
+
     r = rand.Next(len(source))
     return source[r]
 
 def getItemFromIndex(index):
+    #handle being called after trashcans
     if index == "DishOfTheDay":
         return index
     return ObjectInfo[index].split('/')[0]
 
+def fairyCropIndex(seed,days,numberOfHoeDirts=0):
+    #Assumes all other terrainFeatures have been cleared (trees/grass/flooring)
+    rand = CSRandom(seed+days)
+    if numberOfHoeDirts == 0:
+        return rand.Sample()
+    return rand.Next(numberOfHoeDirts)
+
+def totalHarvest(seed,chanceForExtra,level=0,fert=0):
+    num1 = 1
+    rand = CSRandomLite(seed)
+    num3 = 0.2 * (level / 10.0) + 0.2 * fert * ((level + 2.0) / 12.0) + 0.01;
+    if rand.Sample() >= num3:
+        rand.Sample() #crop quality
+    if False:
+        rand.Sample() #TODO: min/max harvest
+    if chanceForExtra > 0:
+        while rand.Sample() < chanceForExtra:
+            num1 = num1 +1
+    if rand.Sample() < 9.99999974737875E-05:
+        num1 = num1 * 2
+
+    return num1
 
 def test14GiantCrops(seed):
-    for x in range(59,74):
-        for y in range(19,24):
-            for day in range(14,28):
+    for day in range(13,28):
+        for x in range(57,69):
+            for y in range(19,35):
                 if giantCrop(seed,day,x,y,"1.4"):
-                    print(str(x)+","+str(y)+" "+str(day))
+                    print(str(x)+","+str(y)+" day: "+str(day))
+
+def findBestHarvest():
+    for seed in range(3582582,2147483648):
+        num = totalHarvest(seed,0.2)
+        if num > 12:
+            print(str(seed) + " " + str(num))
+def summer2potatodrops():
+    for seed in range(611235816,611235816+79*7+64*11+28):
+        num = totalHarvest(seed,0.2)
+        if num > 3:
+            print(str(seed) + " " + str(num))
 
 if __name__ == '__main__':
-    #findVaultGiantCropSeed();
+    #test14GiantCrops(2000946767 );
     #findMine50Seed();
-    print(uniqueKrobusStock(6,6))
-    test14GiantCrops(0)
+    #print(fairyCropIndex(611235816,30))
+
+
+    #findBestHarvest()
+    print(giantCropAmount(2000946767,21,58,22))
+    print(giantCropAmount(2000946767,22,60,25))
+    print(giantCropAmount(2000946767,20,60,27))
+    print(giantCropAmount(2000946767,20,67,23))

@@ -8,7 +8,7 @@ def findSeed():
     krobusDays = [10,17,24]
     bestSeed = 0
     bestSeedAmount = 99999
-    for seed in range(541214634,2147483648):
+    for seed in range(-1625043261,2147483648):
         if seed % 1000000 == 0:
             print("Searching: " + str(seed))
 
@@ -22,6 +22,8 @@ def findSeed():
         for day in cartDays:
             stock = TravelingCart.getTravelingMerchantStock_1_4(seed+day)
             for item in stock.items():
+                if item[0] == 485:
+                    item = (266,(item[1][0],item[1][1]))
                 if item[0] not in neededItems:
                     continue
                 quantity = neededItems[item[0]] - item[1][1]

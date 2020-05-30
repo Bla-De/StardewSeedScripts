@@ -34,7 +34,9 @@ class CSRandomLite():
 	MAX_INT = 0x7FFFFFFF
 	MIN_INT = 0x80000000
 	def __init__(self, seed):
-		self.seed = seed
+		self.seed = abs(seed)
+		if self.seed > 0x7FFFFFFF:
+			self.seed = self.seed - 0x7FFFFFFF
 		self.index = 0
 	
 	def Sample(self):
@@ -81,7 +83,9 @@ class CSRandom():
 		for k in range(1,5):
 			for i in range(1,56):
 				seedarray[i] -= seedarray[1+(i+30)%55]
-				if seedarray[i] < 0:
+				if i == 47:
+					i = 47
+				while seedarray[i] < 0:
 					seedarray[i]+=self.MAX_INT
 		self._inext = 0
 		self._inextp = 21
@@ -130,3 +134,9 @@ class CSRandom():
 				return int(ran*self.Sample()) + minVal
 			else:
 				return int(ran*self.__sample_lr()) + minVal
+
+if __name__ == '__main__':
+	rand = CSRandom(2000946767+22+1000)
+	rand2 = CSRandomLite(2000946767+22+1000)
+	for i in range(50):
+		print(str(rand2.Sample()) +" " + str(rand.Sample()))

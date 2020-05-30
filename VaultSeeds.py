@@ -1,11 +1,12 @@
 from CSRandom import CSRandomLite
 from ObjectInfo import ObjectInfo
+from SeedUtility import giantCrop,nightEvent,fairyCropIndex
 
 def findVaultGiantCropSeed():
 
-    for seed in range(40700000,999999999):
-        if seed % 1000000 == 0:
-            print(str(seed) + " - not yet found" )
+    for seed in range(56680903,2147483648):
+        #if seed % 1000000 == 0:
+            #print(str(seed) + " - not yet found" )
         sum14 = giantCrop(seed,42,73,23)
 
         if not sum14:
@@ -139,20 +140,21 @@ def checkForForageSpawns(seed,printOutput = False):
 
     return True
 
+def fairyCropNumbers(seed,days):
+    rand = CSRandomLite(seed+days)
+    for i in range(100):
+        print(rand.Sample())
+
 if __name__ == '__main__':
-    #findVaultGiantCropSeed();
-    seeds = [30508122,
-    33310134,
-50743290,
-51008526,
-55101356,
-71030542,
-79512742,
-93054938,
-121080008,
-123387668,
-124402860,
-141990618]
+    findVaultGiantCropSeed();
+    seeds = [50743290,
+             51008526,
+             55101356]
+    seeds = []
     for seed in seeds:
-        print(seed)
-        checkForForageSpawns(seed,True)
+        for day in range(30,40):
+            if nightEvent(seed,day) == "Fairy":
+                print(seed)
+                print(day)
+                fairyCropNumbers(seed,day)
+       # checkForForageSpawns(seed,True)

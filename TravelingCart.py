@@ -155,9 +155,9 @@ def findBundleSeed():
 
 if __name__ == '__main__':
     #findBundleSeed()
-    print(getTravelingMerchantStock(53234174,5))
-    print(getTravelingMerchantStock(53234174,7))
-    print(getTravelingMerchantStock(53234174,12))
-    print(getTravelingMerchantStock(53234174,14))
-    print(getTravelingMerchantStock(53234174,19))
-    print(getTravelingMerchantStock(53234174,21))
+    print(getTravelingMerchantStock(-413811947,5))
+    print(getTravelingMerchantStock(-413811947,7))
+    print(getTravelingMerchantStock(-413811947,12))
+    print(getTravelingMerchantStock(-413811947,14))
+    print(getTravelingMerchantStock(-413811947,19))
+    print(getTravelingMerchantStock(-413811947,21))

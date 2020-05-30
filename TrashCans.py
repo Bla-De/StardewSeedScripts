@@ -15,10 +15,10 @@ GarbageLocations = {
 seasonDict = {0:'Spring', 1:'Summer', 2:'Fall', 3:'Winter'}
 
 
-def randomItemFromSeason(gameID, day, seedAdd, furnace=False):
-	return SeedUtility.randomItemFromSeason(gameID, day, seedAdd, furnace)
+def randomItemFromSeason(gameID, day, seedAdd, furnace=False,mineFloor=0):
+	return SeedUtility.randomItemFromSeason(gameID, day, seedAdd, furnace,mineFloor)
 
-def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4"):
+def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", returnMinLuck=False,minesFloor=0):
 	if version == "1.4":
 		rand = CSRandom(gameID // 2 + day + 777 + index * 77)
 		num2 = rand.Next(0,100)
@@ -31,10 +31,12 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4"):
 		#rand.Sample()
 	else:
 		rand = CSRandomLite(gameID//2 + day + 777 + index)
-	if rand.Sample() < luck + 0.2:
+	result = rand.Sample()
+	if result < luck + 0.2:
+		minLuck = result - 0.2
 		r = rand.Next(10)
 		if r == 6:
-			ps = randomItemFromSeason(gameID, day, x*653+y*777, furnace)
+			ps = randomItemFromSeason(gameID, day, x*653+y*777, furnace,minesFloor)
 		elif r == 8:
 			ps = 309 + rand.Next(3)
 		else:	
@@ -47,29 +49,60 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4"):
 					 7 : 403,
 					 9 : 153
 					}[r]
-		if index == 3 and rand.Sample() < luck + 0.2:
-			ps = 535
-			if rand.Sample() < 0.05:
-				ps = 749
-		if index == 4 and rand.Sample() < luck + 0.2:
-			ps = 378 + rand.Next(3)*2
-			if version == "1.4":
-				rand.Next(1,5)
-		if index == 5 and rand.Sample() < luck + 0.2:
-			ps = 196 # meals are complicated
-			return 'DishOfTheDay'
-		if index == 6 and rand.Sample() < luck + 0.2:
-			ps = 223
+		if index == 3:
+			result = rand.Sample()
+			if result < luck + 0.2:
+				minLuck = max(minLuck,result - 0.2)
+				ps = 535
+				if rand.Sample() < 0.05:
+					ps = 749
+		if index == 4:
+			result = rand.Sample()
+			if result < luck + 0.2:
+				minLuck = max(minLuck,result - 0.2)
+				ps = 378 + rand.Next(3)*2
+				if version == "1.4":
+					rand.Next(1,5)
+		if index == 5:
+			result = rand.Sample()
+			if result < luck + 0.2:
+				minLuck = max(minLuck,result - 0.2)
+				ps = 196 # meals are complicated
+				if returnMinLuck:
+					return 'DishOfTheDay',minLuck
+				return 'DishOfTheDay'
+		if index == 6:
+			result = rand.Sample()
+			if result < luck + 0.2:
+				minLuck = max(minLuck,result - 0.2)
+				ps = 223
 		if index == 7 and rand.Sample() < 0.2:
 			ps = 167
+		if returnMinLuck:
+			return ps,minLuck
 		return ps
+	if returnMinLuck:
+		return None,None
 	return None
 
-def checkAllTrash(gameID, day, furnace=False, luck=0.2, version = "1.4"):
-	results = set()
+def checkAllTrash(gameID, day, furnace=False, luck=0.0, version = "1.4"):
+	results = []
 	for i in range(8):
-		can = GarbageLocations[i]
-		results.add(checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version))
+		item = checkSpecificTrash(gameID, day, i, furnace, luck, version)
+		if not item == None:
+			results.extend([item])
+	return results
+
+def checkSpecificTrash(gameID, day, i, furnace=False, luck=0.0, version = "1.4"):
+	can = GarbageLocations[i]
+	return checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version)
+
+def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4"):
+	results = []
+	for i in cans:
+		item = checkSpecificTrash(gameID, day, i, furnace, luck, version)
+		if not item == None:
+			results.extend([item])
 	return results
 
 if __name__ == '__main__':
@@ -77,15 +110,16 @@ if __name__ == '__main__':
 	if len(sys.argv) >= 2:
 		gameID = int(sys.argv[1])
 	else:
-		gameID = 20992
-	for day in range(1,28):
+		gameID = 2000946767
+	days = range(1,31)
+	for day in days:
 		flag = False
 		Cans = dayToYSD(day) + "\n"
 		for i in range(8):
 			can = GarbageLocations[i]
-			item = checkTrash(gameID,day,i,can[0][0],can[0][1],False,0.016)
+			item,luck = checkTrash(gameID,day,i,can[0][0],can[0][1],False,0.10,"1.4",True)
 			if item is not None:
 				flag = True
-				Cans = Cans + ("\t %s : %s\n" % (can[1],SeedUtility.getItemFromIndex(item)))
+				Cans = Cans + ("\t %s : %s\n" % (can[1],SeedUtility.getItemFromIndex(item)+ ", Minimum luck: "+str(luck) ))
 		if flag:
 			print(Cans)
