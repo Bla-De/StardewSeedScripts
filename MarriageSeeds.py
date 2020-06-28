@@ -5,13 +5,17 @@ import SeedUtility
 import TrashCans
 
 def IsQuestItem(seed,daysPlayed):
-    return Cs(seed + daysPlayed).Sample() >= 0.6
+    result = Cs(seed + daysPlayed).Sample()
+    return result >= 0.6
 
 def GetRandomPerson(seed,daysPlayed,list):
     return list[Cs(seed + daysPlayed).Next(len(list))]
 
-def IsRightRandomPerson(seed,daysPlayed,list,person):
-    return GetRandomPerson(seed,daysPlayed,list) == person
+def IsRightRandomPerson(seed,daysPlayed,list,person,report=False):
+    foundPerson = GetRandomPerson(seed,daysPlayed,list)
+    if report:
+        print(foundPerson)
+    return foundPerson == person
 
 def GetQuestItem(seed,daysPlayed,recipesKnown=1,mineFloor=0):
     random = Cs(seed + daysPlayed)
@@ -29,7 +33,7 @@ def GetPossibleCrops(season,firstWeek):
         return [190,188,24,192]
     elif season == 1:
         if firstWeek:
-            return [264,262,260]
+            return [254,256]
         return [254,256,264,262,260]
     elif season == 2:
         if firstWeek:
@@ -37,23 +41,22 @@ def GetPossibleCrops(season,firstWeek):
         return [270,276,280,272,278]
 
 def FindMarriageSeed():
-    for seed in range(2127999038,2147483648): #TAS - 886567826
+    for seed in range(2946330,2147483648): #TAS - 886567826
         #if seed % 1000000 == 0:
         #    print("searching: "+str(seed))
         AnalyseSeed(seed,False,0,False,0.08)
 
 def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
-    
+    result = Cs(seed + 20).Sample()
+    if not( 0.75 <= result < 0.7599646317 ):
+         return
+
+
     if report:
         print(seed)
-    goodSpringItems = {16,18,20,22,24,190,192}
-    goodSummerItems = {396,398,402}
+    goodSpringItems = {16,18,20,22,24}
+    goodSummerItems = {396,398,402,254,256,264,262,260}
     friendships = ["Robin","Lewis","Shane","Marnie"]
-
-    if not report:
-        if not IsQuestItem(seed,20) or not IsRightRandomPerson(seed,20,friendships,"Shane"):
-            return
-
     
     found = False
     possibleSteps = []
@@ -61,7 +64,7 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
     steps = 0
     if strict:
         for steps in range(240):
-            if SeedUtility.dishOfTheDay(seed,3,steps) == 215:
+            if SeedUtility.dishOfTheDay(seed,20,steps) == 215:
                 possibleSteps.extend([steps])
                 found = True
 
@@ -70,8 +73,8 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
         lowestLuck = 999
         beststeps = 0
         for steps in possibleSteps:
-            luck = SeedUtility.dailyLuck(seed,3,steps)
-            if TrashCans.checkSpecificTrash(seed,3,5,False,luck) == 'DishOfTheDay':
+            luck = SeedUtility.dailyLuck(seed,20,steps)
+            if TrashCans.checkSpecificTrash(seed,20,5,False,luck) == 'DishOfTheDay':
                 possibleSteps2.extend([steps])
                 if luck < lowestLuck:
                     beststeps = steps
@@ -96,22 +99,8 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
     dailyTrash = list()
     availableTrash = list()
     validDay = list()
-    #days = [6,8,10,16,20,22]
-    friendships = []
-    for day in range(2,29):
-        if day in {13,24}:
-            continue
-        if firstQuest:
-            friendships = ["Shane"]
-        elif day < 20:
-            friendships = ["Robin","Lewis","Shane"]
-        else:
-            friendships = ["Robin","Lewis","Shane","Marnie"]
-        if not IsQuestItem(seed,day):
-            continue
-        if not firstQuest and not IsRightRandomPerson(seed,day,friendships,"Shane"):
-            continue
-
+    days = [20,22,26,28,30,43,45,47,49,51,53]
+    for day in days:
         luck = inputluck
         if strict:
             if count == 0:
@@ -126,17 +115,14 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
         else:
             recipes = 2
 
-        if day > 20: #7 heart
-            recipes = recipes + 1
-
-        if day > 24: #foraging 2
+        if day > 46: #7 heart
             recipes = recipes + 1
 
         item = GetQuestItem(seed, day,recipes)
 
         checkedTrash = False
         cans = [0,1,2,5,6]
-        if item not in goodSpringItems:
+        if not ( item in goodSpringItems or item in goodSummerItems ):
             dailyTrash.clear
             dailyTrash = TrashCans.checkCans(seed,day,cans,False,luck)
             if (dailyTrash == None or item not in dailyTrash) and (availableTrash == None or item not in availableTrash ):
@@ -146,12 +132,8 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
                 continue
             checkedTrash = True
 
-        if day < 5 and item == 24:
-            continue
-        if day < 7 and item == 192:
-            continue
-        if day < 14 and item == 190:
-            continue
+        if day == 30 and item in {254,256,264,262,260}:
+            return
 
         if not checkedTrash:
             dailyTrash.clear
@@ -163,17 +145,14 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
         firstQuest = False
         count = count + 1
 
-        if item == 16:
-            horseradishQuest = True
-
         validDay.extend([day])
         if report:
             print(str(day)+": "+SeedUtility.getItemFromIndex(item))
-    if count < 7:
+    if count < 8:
         return
 
     if not report:
-        print(str(seed)+" "+str(count) + " " + str(horseradishQuest))
+        print(str(seed)+" "+str(count))
 
     return validDay
 
@@ -206,10 +185,10 @@ def checkQuests(seed,days):
 
 if __name__ == '__main__':
 
-    #print(SeedUtility.getItemFromIndex(GetQuestItem(436587570,22,4)))
+    #print(SeedUtility.getItemFromIndex(GetQuestItem(1946946589,20,2)))
 
 
-    FindMarriageSeed()
+    #FindMarriageSeed()
 
     if True:
 
@@ -217,12 +196,12 @@ if __name__ == '__main__':
     
         
         #seeds=[1099580,1621067,13197449,13253836,14376653,23354966,24482084,29668500,33019044,36418818,39202837,41906902,45199074,47174141,58989516,68616293,76541221,79856740,107002132,120373944,124277074,124503849,137900763,140263851,148611917,150719914,153647209,164633610,172780564,176114497,179064913,179106986,185977685,195590144,208195965,230090530,240206824,252190399,270198820,275841751,277303269,280970553,282394948,302843647,305426554,317030988,319715027,325405092,331705851,332510500,334379504,335984966,336623419,339655885,345086154,348397479,359311284,371149357,374137453,379780696,403210223,405725193,416407920,420275357,424285825,425071767,434147292,436587570,439563448,445248653,462407387,467143218,477592681,479112571,484844133,494786331,501138416,508349441,511348886,512186355,519899201,536071639,537104583,546205120,548215865,721979759]
-        seeds=[24482084,35164053,68616293,87255430,99701900,110202890,121734144,172057854,206288634,217556191,346337508,386746886,412917712,434907014,472483143,491968734,510678951,605865399,663290882,713701525,732755104,789998672,865086561,878135988,887258647,998846025,1028766074,1049072902,1058828863,1064189591,1069740572,1104058040,1125612476,1127390066,1139058999,1156806487,1167332828,1223526556,1245141504,1391110072,1450256021,1490158896,1571922210,1584131314,1591162386,1611639981,1647313840,1660937529,1753285577,1849678630,1868424789,1890571792,1924974476,1940010252,1940685248,1946946589,1957799055,1979893195,1986613568]
-        seeds = []
-        
+        seeds=[44385714,57349479,59812744,114516816,122349683,123819116,130518108,135257930,199942152,211876790,289882631,352417095,361177195,390981616,485026073,506297726,596271226,677983771,711924098,739797732,745502758,795905664,826738766,829957829,841368015,849902299,883793329,897744148,909969105,914770576,954644934,965275933,995043342,1048059879,1162594997,1165064550,1183904531,1283823644,1288378965,1308015858,1314393026,1378160405,1402229365,1480775199,1482135024,1524641318,1547839120,1587720635,1597189131,1604706885,1662107285,1704962582,1746561776,1757330165,1793763545,1813217832,1881072467,1890478489,1897949109,1902878694,1909128127,1912200258,1929262739,1981818569,1983617630,1987136265,2009648681,2064171663,2145893461,2146639426]
+        seeds = [59812744,361177195,390981616,711924098,745502758,795905664,1165064550,1757330165,1793763545,1813217832,1902878694,1912200258]
+
         for seed in seeds:
-            days = AnalyseSeed(seed,True,0,True,0.1)
-            #days = []
+            days = AnalyseSeed(seed,True,0,True,-0.1)
+            days = []
             for day in days:
                 flag = False
                 Cans = TrashCans.dayToYSD(day) + "\n"

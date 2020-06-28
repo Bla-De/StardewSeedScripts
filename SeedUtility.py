@@ -289,17 +289,17 @@ def printGiantCropHarvest(seed,spots,days):
         for day in days:
             print(str(day) + " " + str(giantCropAmount(seed,day,spot[0]-1,spot[1]-1)))
 
-def printPotatoSpots(seed):
-    for x in range(57,69):
-        for y in range(18,25):
-            print(str(x)+","+str(y)+" harvest: "+ str(totalHarvest(seed+7+x*7+y*11,0.2)))
+def printPotatoSpots(seed,day):
+     for y in range(18,25):
+        for x in range(57,69):
+            print(str(x)+","+str(y)+" harvest: "+ str(totalHarvest(seed+day+x*7+y*11,0.2)))
 
 if __name__ == '__main__':
-    test14GiantCrops(1946946589 );
-    #printGiantCropHarvest(1946946589,[[61,29],[65,19],[67,22]],range(16,23))
+    #test14GiantCrops(1946946589 );
+    printGiantCropHarvest(1946946589,[[65,21]],range(24,25))
     #findMine50Seed();
     #print(fairyCropIndex(611235816,30))
-
+    #printPotatoSpots(1946946589,18)
 
     #findBestHarvest()
             
