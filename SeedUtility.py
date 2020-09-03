@@ -1,9 +1,11 @@
 from CSRandom import CSRandomLite,CSRandom
 from ObjectInfo import ObjectInfo
-def dailyLuck(seed,daysPlayed,steps):
-    #DailyLuck random is initialised before daysPlayed is incremented
+
+def dishOfTheDay(seed,daysPlayed,steps,rand=None):
+    #random is initialised before daysPlayed is incremented
     localDaysPlayed = daysPlayed - 1;
-    rand = CSRandomLite(int(seed/100) + localDaysPlayed * 10 + 1 + steps)
+    if rand == None:
+        rand = CSRandomLite(int(seed/100) + localDaysPlayed * 10 + 1 + steps)
     dayOfMonth = ((localDaysPlayed-1) % 28) + 1
   #  for index in range(100):
   #      print( str( min(.10, rand.Next(-100, 101) / 1000) ) )
@@ -12,28 +14,66 @@ def dailyLuck(seed,daysPlayed,steps):
     dish = rand.Next(194,240)
     while dish in { 346, 196, 216, 224, 206, 395, 217 }:
         dish = rand.Next(194,240)
-    rand.Sample(); #Dish additional number
-    rand.Next(1,4); #Dish number
+     #Dish additional number
+    number = rand.Next(1,4 + 10 if rand.Sample() < 0.08 else 0); #Dish number
+    rand.Sample(); #Object constructor
+    return dish,number
+
+def dailyLuck(seed,daysPlayed,steps,rand=None):
+    if rand == None:
+        #random is initialised before daysPlayed is incremented
+        rand = CSRandomLite(int(seed/100) + (daysPlayed - 1) * 10 + 1 + steps)
+        dishOfTheDay(seed,daysPlayed,steps,rand)
+
     #rand.Sample(); #Friendship
     #rand.Sample(); #Friendship mail
     rand.Sample(); #Rarecrow society
-    rand.Sample(); #Random call not yet found in code
     return min(.10, rand.Next(-100, 101) / 1000)
 
-def dishOfTheDay(seed,daysPlayed,steps):
-    #DailyLuck random is initialised before daysPlayed is incremented
-    localDaysPlayed = daysPlayed - 1;
-    rand = CSRandomLite(int(seed/100) + localDaysPlayed * 10 + 1 + steps)
-    dayOfMonth = ((localDaysPlayed-1) % 28) + 1
-  #  for index in range(100):
-  #      print( str( min(.10, rand.Next(-100, 101) / 1000) ) )
-    for index in range(dayOfMonth):
-        rand.Sample()
-    dish = rand.Next(194,240)
-    while dish in { 346, 196, 216, 224, 206, 395, 217 }:
-        dish = rand.Next(194,240)
+def weatherTomorrow(seed,daysPlayed,steps,weatherToday=0,rand=None):
+    if rand == None:
+        #random is initialised before daysPlayed is incremented
+        rand = CSRandom(int(seed/100) + (daysPlayed - 1) * 10 + 1 + steps)
+        dishOfTheDay(seed,daysPlayed,steps,rand)
+        dailyLuck(seed,daysPlayed,steps,rand)
 
-    return dish
+    if weatherToday == 2:
+        num = rand.Next(16,64)
+        for index in range(num):
+            rand.Sample()
+            rand.Sample()
+            rand.Sample()
+            rand.Sample()
+            rand.Sample()
+
+    season = (day-1) // 28 % 4
+    spring = season == 0
+    summer = season == 1
+    fall = season == 2
+    winter = season == 3
+
+    dayOfMonth = (((daysPlayed-1) % 28) + 1)
+    if not summer:
+        if not winter:
+            chanceToRainTomorrow = 0.183
+        else:
+            chanceToRainTomorrow = 0.63
+    else:
+        chanceToRainTomorrow = dayOfMonth * (3.0 / 1000.0) + .12
+
+    if rand.Sample() < chanceToRainTomorrow:
+        weather = 1
+        if summer and rand.Sample() < 0.85 or not winter and rand.Sample() < 0.25 and dayOfMonth > 2 and dayOfMonth > 27:
+            weather = 3
+        if winter:
+            weather = 5
+    elif daysPlayed <= 2 or ( not spring or rand.Sample() >= 0.2 ) and ( not fall or rand.Sample() >= 0.6 ):
+        weather = 0
+    else:
+        weather = 2
+
+    return weather
+
 
 def giantCrop(seed,daysPlayed,x,y, version="1.3"):
     if version == "1.3":
@@ -265,10 +305,10 @@ def totalHarvest(seed,chanceForExtra,level=0,fert=0):
 
     return num1
 
-def test14GiantCrops(seed):
-    for day in range(16,27):
-        for x in range(57,69):
-            for y in range(19,35):
+def test14GiantCrops(seed,days,xRange,yRange):
+    for day in days:
+        for x in xRange:
+            for y in yRange:
                 if giantCrop(seed,day,x,y,"1.4"):
                     print(str(x)+","+str(y)+" day: "+str(day))
 
@@ -283,10 +323,10 @@ def summer2potatodrops():
         if num > 3:
             print(str(seed) + " " + str(num))
 
-def printGiantCropHarvest(seed,spots,days):
+def printGiantCropHarvest(seed,spots,lastDay):
     for spot in spots:
         print(spot)
-        for day in days:
+        for day in range(spot[2],lastDay+1):
             print(str(day) + " " + str(giantCropAmount(seed,day,spot[0]-1,spot[1]-1)))
 
 def printPotatoSpots(seed,day):
@@ -294,12 +334,41 @@ def printPotatoSpots(seed,day):
         for x in range(57,69):
             print(str(x)+","+str(y)+" harvest: "+ str(totalHarvest(seed+day+x*7+y*11,0.2)))
 
+def checkMinesSpot(seed, ladder=False):
+    objects = []
+    r = CSRandomLite(seed)
+    r.Sample()
+    if not ladder:
+        r.Sample()
+    if r.Sample() < 0.022:
+        objects.extend([535])
+    if r.Sample() < 0.005:
+        objects.extend([749])
+    if r.Sample() < 0.05:
+        r.Sample()
+        r.Sample()
+        if r.Sample() < 0.25:
+            objects.extend([382])
+        if r.Sample() < 0.1:
+            objects.extend([380])
+        else:
+            objects.extend([378])
+
+    return objects
+
+def checkAllMinesSpots():
+    for seed in range(773295512,2147483647,2):
+        objects = checkMinesSpot(seed)
+        if len(objects) == 4 and 380 in objects:
+            print(seed)
+
 if __name__ == '__main__':
-    #test14GiantCrops(1946946589 );
-    printGiantCropHarvest(1946946589,[[65,21]],range(24,25))
+    #test14GiantCrops(1165064550,range(42,50),range(35,52 ),range(44,52 ));
+    #printGiantCropHarvest(1165064550,[[50,47,53]],53)
     #findMine50Seed();
     #print(fairyCropIndex(611235816,30))
     #printPotatoSpots(1946946589,18)
 
     #findBestHarvest()
+    checkAllMinesSpots()
             
