@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 # C# Random Notes!
 ### Reseeding is BAD! Stardew Valley does it ALL OF THE TIME
@@ -136,7 +137,9 @@ class CSRandom():
 				return int(ran*self.__sample_lr()) + minVal
 
 if __name__ == '__main__':
-	rand = CSRandom(2000946767+22+1000)
-	rand2 = CSRandomLite(2000946767+22+1000)
+	rand = CSRandomLite(456)
+
+	print(rand.Sample())
+	rand2 = copy.copy(rand)
 	for i in range(50):
 		print(str(rand2.Sample()) +" " + str(rand.Sample()))

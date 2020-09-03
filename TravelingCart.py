@@ -151,13 +151,19 @@ def findBundleSeed():
         if itemList:
             print(list(chain.from_iterable(itemList)))
             
+def writeAllSeedsToFile():
+
+    file = open("F:\SDV\Cart.txt","ab")
+
+    startSeed = -2147483648
+    endSeed = 2147483647
+
+    for seed in range(startSeed,endSeed + 1):
+        file.write(format(seed,'b')+format(":",'b')+ format(getTravelingMerchantStock_1_4(seed)+format(",\n",'b'),'b'))
+
+
 
 
 if __name__ == '__main__':
     #findBundleSeed()
-    print(getTravelingMerchantStock(-413811947,5))
-    print(getTravelingMerchantStock(-413811947,7))
-    print(getTravelingMerchantStock(-413811947,12))
-    print(getTravelingMerchantStock(-413811947,14))
-    print(getTravelingMerchantStock(-413811947,19))
-    print(getTravelingMerchantStock(-413811947,21))
+    writeAllSeedsToFile();
