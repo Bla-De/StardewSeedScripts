@@ -18,8 +18,8 @@ def isEvent(seed):
 def checkTiles(seed,farm):
     rand = CSRandomLite(seed)
     for index in range(50):
-        x = rand.Next(5,farm.width-4)
-        y = rand.Next(5,farm.height-4)
+        x = rand.Next(5,60)
+        y = rand.Next(5,60)
         coordinate = (x,y)
         if coordinate not in farm.back:
             return False
