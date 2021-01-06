@@ -18,10 +18,11 @@ for key in ObjectInfo.keys():
 ObjectInfo[174][0] = 'Large EggW'
 ObjectInfo[182][0] = 'Large EggB'
 
-objectsOffLimits = [79, 158, 159, 160, 161, 162, 163, 261, 277, 279,
-                   305, 308, 326, 341, 413, 417, 437, 439, 447, 454, 
-                   460, 645, 680, 681, 682, 688, 689, 690, 774, 775,
-                   797, 798, 799, 800, 801, 802, 803, 807, 812]
+objectsOffLimits = [69, 73, 79, 91, 158, 159, 160, 161, 162, 163,
+                    261, 277, 279, 289, 292, 305, 308, 326, 341, 413,
+                    417, 437, 439, 447, 454, 460, 645, 680, 681, 682,
+                    688, 689, 690, 774, 775, 797, 798, 799, 800, 801,
+                    802, 803, 807, 812]
 validObjects = set()
 for key,array in ObjectInfo.items():
     if '-' in array[3] and array[1] > 0 and '-13' not in array[3] and 'Quest' != array[3] \
@@ -31,7 +32,7 @@ for key,array in ObjectInfo.items():
 
 ObjectIDFromName = dict(zip([obj[0] for obj in ObjectInfo.values()], ObjectInfo.keys()))
 
-def getTravelingMerchantStock_1_4(seed, CSRandom=CSRandomFast):
+def getTravelingMerchantStock_1_4(seed, version, CSRandom=CSRandomFast):
     # check speed trial block below 
     # CSRandomSlow is 60% slower but it will always work
     # CSRandomFast can only call Next 100 times due to implementation
@@ -53,11 +54,11 @@ def getTravelingMerchantStock_1_4(seed, CSRandom=CSRandomFast):
         return currentStock
     except:
         # we must've hit over 100 random calls, need to revert to the slow version
-        return getTravelingMerchantStock_1_4(seed, CSRandomSlow)
+        return getTravelingMerchantStock_1_4(seed, version, CSRandomSlow)
 
 def getTravelingMerchantStock(gameID, dayNumber, version="1.4"):
-    if version == "1.4":
-        return getTravelingMerchantStock_1_4(gameID + dayNumber)
+    if version == "1.4" or version == "1.5":
+        return getTravelingMerchantStock_1_4(gameID + dayNumber, version)
 
     def _invalid_idx(index):
         invalid = True if index in [158, 159, 160, 161, 162, 163, 326, 341, 413, 437, 439, 454, 460, 645, 681, 682,
@@ -163,7 +164,8 @@ def writeAllSeedsToFile():
 
 
 
-
 if __name__ == '__main__':
     #findBundleSeed()
-    writeAllSeedsToFile();
+    #writeAllSeedsToFile();
+
+    print(getTravelingMerchantStock(1265133,5))

@@ -1,5 +1,6 @@
 from CSRandom import CSRandomLite,CSRandom
 from ObjectInfo import ObjectInfo
+import TrashCans
 
 def dishOfTheDay(seed,daysPlayed,steps,rand=None):
     #random is initialised before daysPlayed is incremented
@@ -45,8 +46,9 @@ def weatherTomorrow(seed,daysPlayed,steps,weatherToday=0,rand=None):
             rand.Sample()
             rand.Sample()
             rand.Sample()
+            rand.Sample()
 
-    season = (day-1) // 28 % 4
+    season = (daysPlayed-1) // 28 % 4
     spring = season == 0
     summer = season == 1
     fall = season == 2
@@ -143,15 +145,19 @@ def doesSeedHaveUnusualDarkFloor(seed,daysPlayed,deepestFloor):
 
 
 def nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4"):
-    #Assume geodesCracked passed in is 0 based
-    rand = CSRandomLite(geodesCracked + 1 + int(seed / 2))
-    if version == "1.4":
+    
+    rand = CSRandomLite(geodesCracked + int(seed / 2))
+
+    if version == "1.4" or version == "1.5":
         num1 = rand.Next(1,10)
         for index in range(num1):
           rand.Sample()
         num2 = rand.Next(1, 10)
         for index in range(num2):
           rand.Sample()
+    
+    if version == "1.5":
+        rand.Sample() #QI beans
 
     if rand.Sample() < 0.5:
         initialStack = rand.Next(3) * 2 + 1
@@ -370,5 +376,21 @@ if __name__ == '__main__':
     #printPotatoSpots(1946946589,18)
 
     #findBestHarvest()
-    checkAllMinesSpots()
+    #checkAllMinesSpots()
+
+    for seed in range(262832051,263134451):
+        #if not dishOfTheDay(seed,1,0)[0] == 213:
+        #    continue;
+
+        if not TrashCans.checkSpecificTrash(seed,1,5) == "DishOfTheDay":
+            continue;
+
+        if not TrashCans.checkSpecificTrash(seed,1,3) == 535:
+            continue
+
+        item = nextGeodeItem(seed,0,"Geode")
+        if not item[0] == 378 or item[1] < 10:
+            continue
+
+        print(seed)
             
