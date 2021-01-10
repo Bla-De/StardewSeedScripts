@@ -4,13 +4,19 @@ import TravelingCart
 import SeedUtility
 import TrashCans
 import RandomBundlesSeeding
-import os
+from os import path
+import sys
 import json
 from CSRandom import CSRandomLite as Random
 
 fairyItems = [254,256,258,260,376,421,268,262,266,270]
-absolute_path = os.path.dirname(os.path.abspath(__file__))
-filename = absolute_path + '/CCRoomResults.txt'
+
+absolute_path = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+path_to_dat = path.abspath(path.join(absolute_path, 'RandomBundleSearchRange.txt'))
+filename = path.abspath(path.join(absolute_path, 'CCRoomResults.txt'))
+rangeFile = open(path_to_dat, 'r')
+startRange = int(rangeFile.readline())
+endRange = int(rangeFile.readline())
 travelingCartCache = {}
 
 def cleanupCache(seed):
@@ -26,7 +32,9 @@ def findSeed():
     krobusDays = [10,17,24]
     bestSeed = 0
     bestSeedAmount = 99999
-    seeds = range(179831485,999999999)
+
+
+    seeds = range(startRange,endRange)
     for seed in seeds:
         if seed % 10000 == 0:
             cleanupCache(seed)
@@ -87,15 +95,25 @@ def findSeed():
             if random.Next(2,31) <= 8:
                 del requiredItems[requiredItems.index(266)]
 
+        needTrash = False
+        if 150 in requiredItems:
+            del requiredItems[requiredItems.index(150)]
+            needTrash = True
         #Hack for Garden bundle
         if len(requiredItems) == 1:
-            if 593 in requiredItems or 595 in requiredItems or 421 in requiredItems:
-                requiredItems = []
+            if 593 in requiredItems:
+               del requiredItems[requiredItems.index(593)]
+            if 595 in requiredItems:
+               del requiredItems[requiredItems.index(595)]
+            if 421 in requiredItems:
+               del requiredItems[requiredItems.index(421)]
+
+            
 
         if requiredItems == []:
-            print(str(seed) + " " + str(summerCrops))
+            print(str(seed) + " " + str(summerCrops) + " Need Trash: " + str(needTrash))
             f = open(filename,"at")
-            f.write(str(seed) + " " + str(summerCrops) + '\n')
+            f.write(str(seed) + " " + str(summerCrops) + " Need Trash: " + str(needTrash) + '\n')
             f.close()
 
         if len(requiredItems) < bestSeedAmount:
@@ -122,5 +140,5 @@ def displayDetails(seeds,cartDays,krobusDays):
 if __name__ == '__main__':
     findSeed()
     
-    seeds=[52411360]
+    seeds=[-186796577]
     displayDetails(seeds,[5,7,12,14,19,21,26,28],[10,17,24])
