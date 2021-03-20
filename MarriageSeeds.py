@@ -3,6 +3,11 @@ from CSRandom import CSRandomLite as Cs
 import Location
 import SeedUtility
 import TrashCans
+import sys
+from os import path
+
+absolute_path = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+filename = path.abspath(path.join(absolute_path, 'MarriageResults.txt'))
 
 def IsQuestItem(seed,daysPlayed):
     result = Cs(seed + daysPlayed).Sample()
@@ -41,12 +46,15 @@ def GetPossibleCrops(season,firstWeek):
         return [270,276,280,272,278]
 
 def FindMarriageSeed():
-    for seed in range(-2147483648,0): #TAS - 886567826
-        #if seed % 1000000 == 0:
-        #    print("searching: "+str(seed))
-        AnalyseSeed(seed,False,0,False,0.08)
+    for seed in range(1000000000): #TAS - 886567826
+        if seed % 1000000 == 0:
+            print("searching: "+str(seed))
+            f = open(filename,"at")
+            f.write("searching: " + str(seed) + '\n')
+            f.close()
+        AnalyseSeed(seed,False,0,False,0.1)
 
-def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
+def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.08):
     result = Cs(seed + 20).Sample()
     if not( 0.75 <= result < 0.7599646317 ):
          return
@@ -64,7 +72,7 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
     steps = 0
     if strict:
         for steps in range(240):
-            if SeedUtility.dishOfTheDay(seed,20,steps) == 215:
+            if SeedUtility.dishOfTheDay(seed,20,steps)[0] == 215:
                 possibleSteps.extend([steps])
                 found = True
 
@@ -110,15 +118,18 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
             return
 
 
-        if count < 2:
+        if count < 1:
             recipes = 1
         else:
             recipes = 2
 
-        if day > 46: #7 heart
-            recipes = recipes + 1
+        #if day > 46: #7 heart
+        #    recipes = recipes + 1
 
         item = GetQuestItem(seed, day,recipes)
+
+        if day == 30 and item in {254,256,264,262,260}:
+            return
 
         checkedTrash = False
         cans = [0,1,2,5,6]
@@ -131,9 +142,6 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
 
                 continue
             checkedTrash = True
-
-        if day == 30 and item in {254,256,264,262,260}:
-            return
 
         if not checkedTrash:
             dailyTrash.clear
@@ -153,6 +161,9 @@ def AnalyseSeed(seed,report=False,horseradishDay=0,strict=False,inputluck=0.8):
 
     if not report:
         print(str(seed)+" "+str(count))
+        f = open(filename,"at")
+        f.write(str(seed)+" "+str(count) + '\n')
+        f.close()
 
     return validDay
 
@@ -185,26 +196,24 @@ def checkQuests(seed,days):
 
 if __name__ == '__main__':
 
-    for daysPlayed in range(2,8):
-        print(Cs(256151046 + daysPlayed).Sample())
+
 
     #print(SeedUtility.getItemFromIndex(GetQuestItem(1946946589,20,2)))
-    for num in range(6):
-        print(SeedUtility.getItemFromIndex(GetQuestItem(1165064550, 47,num)))
+    #for num in range(6):
+    #    print(SeedUtility.getItemFromIndex(GetQuestItem(1165064550, 47,num)))
 
     #FindMarriageSeed()
 
-    if False:
+    if True:
 
         
     
         
-        #seeds=[1099580,1621067,13197449,13253836,14376653,23354966,24482084,29668500,33019044,36418818,39202837,41906902,45199074,47174141,58989516,68616293,76541221,79856740,107002132,120373944,124277074,124503849,137900763,140263851,148611917,150719914,153647209,164633610,172780564,176114497,179064913,179106986,185977685,195590144,208195965,230090530,240206824,252190399,270198820,275841751,277303269,280970553,282394948,302843647,305426554,317030988,319715027,325405092,331705851,332510500,334379504,335984966,336623419,339655885,345086154,348397479,359311284,371149357,374137453,379780696,403210223,405725193,416407920,420275357,424285825,425071767,434147292,436587570,439563448,445248653,462407387,467143218,477592681,479112571,484844133,494786331,501138416,508349441,511348886,512186355,519899201,536071639,537104583,546205120,548215865,721979759]
-        seeds=[44385714,57349479,59812744,114516816,122349683,123819116,130518108,135257930,199942152,211876790,289882631,352417095,361177195,390981616,485026073,506297726,596271226,677983771,711924098,739797732,745502758,795905664,826738766,829957829,841368015,849902299,883793329,897744148,909969105,914770576,954644934,965275933,995043342,1048059879,1162594997,1165064550,1183904531,1283823644,1288378965,1308015858,1314393026,1378160405,1402229365,1480775199,1482135024,1524641318,1547839120,1587720635,1597189131,1604706885,1662107285,1704962582,1746561776,1757330165,1793763545,1813217832,1881072467,1890478489,1897949109,1902878694,1909128127,1912200258,1929262739,1981818569,1983617630,1987136265,2009648681,2064171663,2145893461,2146639426]
-        seeds = [-2057812015,-1995562430,-1983690601,-1888760827,-1863134029,-1778107238,-1754139391,-1675335501,-1667892060,-1626122478,-1614979312,-1599966278,-1591269789,-1469932983,-1329079527,-1309098380,-1295591100,-1283344025,-1211611630,-1156969653,-1030060506,-1016577038,-993318657,-952301194,-595166287,-549031214,-534546757,-516595749,-506706902,-464253517,-300001392,-213715221,-95365441,-40779918,-28227452]
-        seeds = [-40779918]
+        seeds = [191133379,222164048,252430246,295907385,322022582,548659496,568322253,610124655,756748197,758980005,191133379,252430246,295907385,4864038,15242800,38670543,71231224,71624195,77152568,102636559,123100397,125211449,138193519,169269226,180146978,218577365,249362552,269478859,274441465,286350239,294040477,298776308,316615367,322548818,334400179,365109916,413749435,445895674,453773579,478332031,478622551,505869527,534937035,571864143,594832004,627849401,635051173,647908295,697170994,745489581,747140751,758206170,768690549,774681413,793146550,826659369,833748166,835399336,854094414,861657162,893256764,894390371,898296916,903717264,907269990,938859826,939540151,941753654,957484827,958851809,973963236]
         for seed in seeds:
-            days = AnalyseSeed(seed,True,0,True,-0.1)
+            days = AnalyseSeed(seed,True,0,True,0.08)
+            if days == None:
+                continue
             #days = []
             for day in days:
                 flag = False
