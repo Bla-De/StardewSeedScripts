@@ -10,6 +10,8 @@ from CSRandom import CSRandom as CSRandomSlow, CSRandomLite as CSRandomFast
 import time
 from collections import OrderedDict
 
+import SeedUtility
+
 with open('ObjectInformation.json','r') as f:
     ObjectInfo = json.load(f)['content']
 ObjectInfo = dict(zip(map(lambda x:int(x),ObjectInfo.keys()),map(lambda x: x.split('/'),ObjectInfo.values())))
@@ -32,7 +34,9 @@ for key,array in ObjectInfo.items():
 
 ObjectIDFromName = dict(zip([obj[0] for obj in ObjectInfo.values()], ObjectInfo.keys()))
 
-def getTravelingMerchantStock_1_4(seed, version, CSRandom=CSRandomFast):
+validFurnature = [0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 31, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 95, 128, 192, 197, 202, 207, 212, 288, 294, 300, 306, 312, 416, 424, 432, 440, 512, 520, 528, 536, 704, 709, 714, 719, 724, 727, 800, 807, 814, 821, 1120, 1122, 1124, 1126, 1128, 1130, 1132, 1134, 1136, 1138, 1140, 1142, 1144, 1146, 1148, 1150, 1216, 1218, 1220, 1222, 1224, 1280, 1283, 1285, 1287, 1289, 1291, 1292, 1293, 1294, 1295, 1296, 1297, 1362, 1363, 1364, 1365, 1366, 1367, 1368, 1369, 1376, 1377, 1378, 1379, 1380, 1381, 1382, 1383, 1384, 1385, 1386, 1387, 1388, 1389, 1390, 1391, 1393, 1395, 1397, 1399, 1400, 1401, 1440, 1443, 1445, 1447, 1449, 1451, 1456, 1461, 1539, 1543, 1547, 1550, 1552, 1557, 1559, 1561, 1563, 1565, 1567, 1600, 1601, 1602, 1603, 1604, 1605, 1606, 1607, 1609, 1612, 1614, 1616, 1618, 1623, 1628, 1630, 1664, 1673, 1675, 1676, 1678, 1682, 1737, 1742, 1744, 1745, 1747, 1748, 1749, 1751, 1753, 1755, 1758, 1777, 1811, 1812, 1814, 1792, 1794, 1866, 1964, 1978, 2048, 2052, 2058, 2064, 2070, 2076, 2176, 2180, 2192, 2304, 2312, 2322, 1228, 2414, 2427, 2397, 2398, 1973, 1974, 1975, 1684, 2627, 2628, 2629, 2630, 2631, 2632, 2633, 2634, 2635, 2636, 1817, 1818, 1819, 1820, 1821, 2637, 2638, 2639, 2640, 2641, 2642, 2643, 2644, 2645, 2646, 2647, 2648, 2649, 2650, 2651, 2652, 2488, 2584, 2720, 2784, 2790, 2794, 2798, 2730, 2654, 2655, 2802, 2734, 2736, 2738, 2740, 2748, 2812, 2750, 2742, 2870, 2875]
+
+def getTravelingMerchantStock_1_4(seed, version, CSRandom=CSRandomFast, rareSeeds=False):
     # check speed trial block below 
     # CSRandomSlow is 60% slower but it will always work
     # CSRandomFast can only call Next 100 times due to implementation
@@ -51,10 +55,30 @@ def getTravelingMerchantStock_1_4(seed, version, CSRandom=CSRandomFast):
                     if num not in currentStock:
                         currentStock[num] = [cost,qty]
                         break
+        
+        if rareSeeds:
+            #Furniture
+            lowerBound = 0
+            upperBound = 1613
+
+            index = random.Next(lowerBound, upperBound)
+            while index not in validFurnature:
+                index = random.Next(lowerBound, upperBound)
+            
+            #Furniture price
+            random.Sample()
+
+            qty = 1 if not (random.Sample() < 0.1) else 5
+            if 347 not in currentStock:
+                currentStock[347] = [1000,qty]
+
+
+
+
         return currentStock
     except:
         # we must've hit over 100 random calls, need to revert to the slow version
-        return getTravelingMerchantStock_1_4(seed, version, CSRandomSlow)
+        return getTravelingMerchantStock_1_4(seed, version, CSRandomSlow,rareSeeds)
 
 def getTravelingMerchantStock(gameID, dayNumber, version="1.4"):
     if version == "1.4" or version == "1.5":
@@ -168,4 +192,13 @@ if __name__ == '__main__':
     #findBundleSeed()
     #writeAllSeedsToFile();
 
-    print(getTravelingMerchantStock(1265133,5))
+    cartDays = [5,7,12,14,19,21,26,28,33,35]
+    seed = 269903083
+
+    for day in cartDays:
+        print(day)
+        stock = getTravelingMerchantStock_1_4(seed+day,"1.5",rareSeeds=True)
+        print(stock)
+        for item in stock.items():
+            print(SeedUtility.getItemFromIndex(item[0]))
+            print(item[1])
