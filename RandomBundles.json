@@ -1,0 +1,442 @@
+[
+  {
+    "AreaName": "Crafts Room",
+    "Keys": "13 14 15 16 17 19",
+    "BundleSets": [
+      {
+        "Bundles": [
+          {
+            "Name": "Spring Foraging",
+            "Index": 0,
+            "Sprite": "13",
+            "Color": "Green",
+            "Items": "1 Wild Horseradish, 1 Daffodil, 1 Leek, 1 Dandelion, 1 Spring Onion",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "30 Spring Seeds"
+          },
+          {
+            "Name": "Summer Foraging",
+            "Index": 1,
+            "Sprite": "14",
+            "Color": "Yellow",
+            "Items": "1 Grape, 1 Spice Berry, 1 Sweet Pea",
+            "Pick": 3,
+            "RequiredItems": -1,
+            "Reward": "30 Summer Seeds"
+          },
+          {
+            "Name": "Fall Foraging",
+            "Index": 2,
+            "Sprite": "15",
+            "Color": "Orange",
+            "Items": "1 Common Mushroom, 1 Wild Plum, 1 Hazelnut, 1 Blackberry",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "30 Fall Seeds"
+          },
+          {
+            "Name": "Winter Foraging",
+            "Index": 3,
+            "Sprite": "16",
+            "Color": "Teal",
+            "Items": "1 Winter Root, 1 Crystal Fruit, 1 Snow Yam, 1 Crocus, 1 Holly",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "30 Winter Seeds"
+          }
+        ]
+      }
+    ],
+    "Bundles": [
+      {
+        "Name": "Construction",
+        "Index": 4,
+        "Sprite": "17",
+        "Color": "Red",
+        "Items": "99 Wood, 99 Wood, 99 Stone, 10 Hardwood",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "1 Charcoal Kiln"
+      },
+      {
+        "Name": "Sticky",
+        "Index": 4,
+        "Sprite": "LooseSprites\\BundleSprites:10",
+        "Color": "Yellow",
+        "Items": "500 Sap",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "1 Charcoal Kiln"
+      },
+      {
+        "Name": "Exotic Foraging",
+        "Index": 5,
+        "Sprite": "19",
+        "Color": "Purple",
+        "Items": "1 Coconut, 1 Cactus Fruit, 1 Cave Carrot, 1 Red Mushroom, 1 Purple Mushroom, 1 Maple Syrup, 1 Oak Resin, 1 Pine Tar, 1 Morel",
+        "Pick": -1,
+        "RequiredItems": 5,
+        "Reward": "5 Autumn's Bounty"
+      },
+      {
+        "Name": "Wild Medicine",
+        "Index": 5,
+        "Sprite": "LooseSprites\\BundleSprites:9",
+        "Color": "Green",
+        "Items": "5 Purple Mushroom, 5 Fiddlehead Fern, 5 White Algae, 5 Hops",
+        "Pick": -1,
+        "RequiredItems": 3,
+        "Reward": "2 Cookout Kit"
+      }
+    ]
+  },
+  {
+    "AreaName": "Pantry",
+    "Keys": "0 1 2 3 4 5",
+    "BundleSets": [
+      {
+        "Bundles": [
+          {
+            "Name": "Spring Crops",
+            "Index": 0,
+            "Sprite": "0",
+            "Color": "Green",
+            "Items": "1 Parsnip, 1 Green Bean, 1 Cauliflower, 1 Potato",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "20 Speed-Gro"
+          },
+          {
+            "Name": "Summer Crops",
+            "Index": 1,
+            "Sprite": "1",
+            "Color": "Yellow",
+            "Items": "1 Tomato, 1 Hot Pepper, 1 Blueberry, 1 Melon",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "1 Quality Sprinkler"
+          },
+          {
+            "Name": "Fall Crops",
+            "Index": 2,
+            "Sprite": "2",
+            "Color": "Orange",
+            "Items": "1 Corn, 1 Eggplant, 1 Pumpkin, 1 Yam",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "1 Bee House"
+          }
+        ]
+      }
+    ],
+    "Bundles": [
+      {
+        "Name": "Quality Crops",
+        "Index": 3,
+        "Sprite": "3",
+        "Color": "Teal",
+        "Items": "[5 GQ Parsnip|5 GQ Green Bean|5 GQ Cauliflower|5 GQ Potato], [5 GQ Melon|5 GQ Hot Pepper|5 GQ Blueberry], [5 GQ Pumpkin|5 GQ Eggplant|5 GQ Yam], [5 GQ Corn]",
+        "Pick": -1,
+        "RequiredItems": 3,
+        "Reward": "1 Preserves Jar"
+      },
+      {
+        "Name": "Rare Crops",
+        "Index": 3,
+        "Sprite": "LooseSprites\\BundleSprites:3",
+        "Color": "Teal",
+        "Items": "1 Ancient Fruit, 1 Sweet Gem Berry",
+        "Pick": -1,
+        "RequiredItems": 1,
+        "Reward": "1 Preserves Jar"
+      },
+      {
+        "Name": "Animal",
+        "Index": 4,
+        "Sprite": "4",
+        "Color": "Red",
+        "Items": "1 Large Milk, 1 182, 1 174, 1 L. Goat Milk, 1 Wool, 1 Duck Egg ",
+        "Pick": -1,
+        "RequiredItems": 5,
+        "Reward": "1 Cheese Press"
+      },
+      {
+        "Name": "Fish Farmer's",
+        "Index": 4,
+        "Sprite": "LooseSprites\\BundleSprites:8",
+        "Color": "Blue",
+        "Items": "15 Roe, 15 Aged Roe, 1 Squid Ink",
+        "Pick": -1,
+        "RequiredItems": 2,
+        "Reward": "1 Worm Bin"
+      },
+      {
+        "Name": "Garden",
+        "Index": 4,
+        "Sprite": "LooseSprites\\BundleSprites:7",
+        "Color": "Red",
+        "Items": "1 Tulip, 1 Summer Spangle, 1 Fairy Rose, 1 Blue Jazz, 1 Sunflower",
+        "Pick": -1,
+        "RequiredItems": 4,
+        "Reward": "1 Quality Sprinkler"
+      },
+      {
+        "Name": "Artisan",
+        "Index": 5,
+        "Sprite": "5",
+        "Color": "Purple",
+        "Items": "1 Truffle Oil, 1 Cloth, 1 Goat Cheese, 1 Cheese, 1 Honey, 1 Jelly, 1 Apple, 1 Apricot, 1 Orange, 1 Peach, 1 Pomegranate, 1 Cherry",
+        "Pick": -1,
+        "RequiredItems": 6,
+        "Reward": "1 Keg"
+      },
+      {
+        "Name": "Brewer's",
+        "Index": 5,
+        "Sprite": "LooseSprites\\BundleSprites:2",
+        "Color": "Orange",
+        "Items": "1 Mead, 1 Wine, 1 Juice, 1 Pale Ale, 1 Green Tea",
+        "Pick": -1,
+        "RequiredItems": 4,
+        "Reward": "1 Keg"
+      }
+    ]
+  },
+  {
+    "AreaName": "Fish Tank",
+    "Keys": "6 7 8 9 10 11",
+    "BundleSets": [
+      {
+        "Bundles": [
+          {
+            "Name": "River Fish",
+            "Index": 0,
+            "Sprite": "6",
+            "Color": "Teal",
+            "Items": "1 Sunfish, 1 Catfish, 1 Shad, 1 Tiger Trout",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "30 Bait"
+          },
+          {
+            "Name": "Lake Fish",
+            "Index": 1,
+            "Sprite": "7",
+            "Color": "Green",
+            "Items": "1 Largemouth Bass, 1 Carp, 1 Bullhead, 1 Sturgeon",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "1 Dressed Spinner"
+          },
+          {
+            "Name": "Ocean Fish",
+            "Index": 2,
+            "Sprite": "8",
+            "Color": "Blue",
+            "Items": "1 Sardine, 1 Tuna, 1 Red Snapper, 1 Tilapia",
+            "Pick": 4,
+            "RequiredItems": -1,
+            "Reward": "5 Warp Totem: Beach"
+          },
+          {
+            "Name": "Night Fishing",
+            "Index": 3,
+            "Sprite": "9",
+            "Color": "Purple",
+            "Items": "1 Walleye, 1 Bream, 1 Eel",
+            "Pick": 3,
+            "RequiredItems": -1,
+            "Reward": "1 Small Glow Ring"
+          }
+        ]
+      }
+    ],
+    "Bundles": [
+      {
+        "Name": "Crab Pot",
+        "Index": 4,
+        "Sprite": "11",
+        "Color": "Purple",
+        "Items": "1 Lobster, 1 Crayfish, 1 Crab, 1 Cockle, 1 Mussel, 1 Shrimp, 1 Snail, 1 Periwinkle, 1 Oyster, 1 Clam",
+        "Pick": -1,
+        "RequiredItems": 5,
+        "Reward": "3 Crab Pot"
+      },
+      {
+        "Name": "Specialty Fish",
+        "Index": 5,
+        "Sprite": "10",
+        "Color": "Red",
+        "Items": "1 Pufferfish, 1 Ghostfish, 1 Sandfish, 1 Woodskip",
+        "Pick": -1,
+        "RequiredItems": 4,
+        "Reward": "1 Dish O' The Sea"
+      },
+      {
+        "Name": "Quality Fish",
+        "Index": 5,
+        "Sprite": "LooseSprites\\BundleSprites:4",
+        "Color": "Red",
+        "Items": "1 GQ Largemouth Bass, 1 GQ Shad, 1 GQ Tuna, 1 GQ Walleye",
+        "Pick": -1,
+        "RequiredItems": 4,
+        "Reward": "1 Dish O' The Sea"
+      },
+      {
+        "Name": "Master Fisher's",
+        "Index": 5,
+        "Sprite": "12",
+        "Color": "Red",
+        "Items": "1 Lava Eel, 1 Scorpion Carp, 1 Octopus, 1 Blobfish",
+        "Pick": -1,
+        "RequiredItems": 2,
+        "Reward": "1 Dish O' The Sea"
+      }
+    ]
+  },
+  {
+    "AreaName": "Boiler Room",
+    "Keys": "20 21 22",
+    "BundleSets": [],
+    "Bundles": [
+      {
+        "Name": "Blacksmith's",
+        "Index": -1,
+        "Sprite": "20",
+        "Color": "Orange",
+        "Items": "1 Copper Bar, 1 Iron Bar, 1 Gold Bar",
+        "Pick": -1,
+        "RequiredItems": 3,
+        "Reward": "1 Furnace"
+      },
+      {
+        "Name": "Geologist's",
+        "Index": -1,
+        "Sprite": "21",
+        "Color": "Purple",
+        "Items": "1 Quartz, 1 Earth Crystal, 1 Frozen Tear, 1 Fire Quartz",
+        "Pick": -1,
+        "RequiredItems": 4,
+        "Reward": "5 Omni Geode"
+      },
+      {
+        "Name": "Adventurer's",
+        "Index": -1,
+        "Sprite": "22",
+        "Color": "Purple",
+        "Items": "99 Slime, 10 Bat Wing, 1 Solar Essence, 1 Void Essence, 10 Bone Fragment",
+        "Pick": 4,
+        "RequiredItems": 2,
+        "Reward": "1 Small Magnet Ring"
+      },
+      {
+        "Name": "Treasure Hunter's",
+        "Index": -1,
+        "Sprite": "LooseSprites\\BundleSprites:1",
+        "Color": "Yellow",
+        "Items": "1 Amethyst, 1 Topaz, 1 Emerald, 1 Diamond, 1 Ruby, 1 Aquamarine",
+        "Pick": -1,
+        "RequiredItems": 5,
+        "Reward": "1 Lucky Lunch"
+      },
+      {
+        "Name": "Engineer's",
+        "Index": -1,
+        "Sprite": "LooseSprites\\BundleSprites:11",
+        "Color": "Purple",
+        "Items": "1 Iridium Ore, 1 Battery, 5 Refined Quartz",
+        "Pick": -1,
+        "RequiredItems": 3,
+        "Reward": "1 Furnace"
+      }
+    ]
+  },
+  {
+    "AreaName": "Bulletin Board",
+    "Keys": "31 32 33 34 35",
+    "BundleSets": [],
+    "Bundles": [
+      {
+        "Name": "Chef's",
+        "Index": -1,
+        "Sprite": "31",
+        "Color": "Red",
+        "Items": "1 Maple Syrup, 1 Fiddlehead Fern, 1 Truffle, 1 Poppy, 1 Maki Roll, 1 Fried Egg",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "1 Pink Cake"
+      },
+      {
+        "Name": "Dye",
+        "Index": -1,
+        "Sprite": "34",
+        "Color": "Teal",
+        "Items": "[1 Red Mushroom|1 Beet], [1 Sea Urchin|1 Amaranth], [1 Sunflower|1 Starfruit], [1 Duck Feather|1 Cactus Fruit], [1 Aquamarine|1 Blueberry], [1 Red Cabbage|1 Iridium Bar]",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "1 Seed Maker"
+      },
+      {
+        "Name": "Field Research",
+        "Index": -1,
+        "Sprite": "32",
+        "Color": "Blue",
+        "Items": "1 Purple Mushroom, 1 Nautilus Shell, 1 Chub, 1 Frozen Geode",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "1 Recycling Machine"
+      },
+      {
+        "Name": "Fodder",
+        "Index": -1,
+        "Sprite": "35",
+        "Color": "Yellow",
+        "Items": "10 Wheat, 10 Hay, 3 Apple",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "1 Heater"
+      },
+      {
+        "Name": "Enchanter's",
+        "Index": -1,
+        "Sprite": "33",
+        "Color": "Purple",
+        "Items": "1 Oak Resin, 1 Wine, 1 Rabbit's Foot, 1 Pomegranate",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "5 Gold Bar"
+      },
+      {
+        "Name": "Children's",
+        "Index": -1,
+        "Sprite": "LooseSprites\\BundleSprites:0",
+        "Color": "Green",
+        "Items": "1 Ancient Doll, 1 Ice Cream, 1 Cookie, 10 Salmonberry",
+        "Pick": -1,
+        "RequiredItems": 3,
+        "Reward": "3 Battery"
+      },
+      {
+        "Name": "Forager's",
+        "Index": -1,
+        "Sprite": "LooseSprites\\BundleSprites:5",
+        "Color": "Orange",
+        "Items": "50 Salmonberry, 50 Blackberry, 20 Wild Plum",
+        "Pick": -1,
+        "RequiredItems": 2,
+        "Reward": "3 Tapper"
+      },
+      {
+        "Name": "Home Cook's",
+        "Index": -1,
+        "Sprite": "LooseSprites\\BundleSprites:6",
+        "Color": "Yellow",
+        "Items": "10 EggCategory, 10 MilkCategory, 100 Wheat Flour",
+        "Pick": -1,
+        "RequiredItems": -1,
+        "Reward": "5 Complete Breakfast"
+      }
+    ]
+  }
+]
