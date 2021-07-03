@@ -2,12 +2,19 @@ from CSRandom import CSRandomLite,CSRandom
 from ObjectInfo import ObjectInfo
 import TrashCans
 
+omniItems = [538, 542, 548, 549, 552, 555, 556, 557, 558, 566, 568, 569, 571, 574, 576, 541, 544, 545, 546, 550, 551, 559, 560, 561, 564, 567, 572, 573, 577, 539, 540, 543, 547, 553, 554, 562, 563, 565, 570, 575, 578, 121, 122, 123]
+geodeItems = [538, 542, 548, 549, 552, 555, 556, 557, 558, 566, 568, 569, 571, 574, 576, 121]
+frozenItems = [541, 544, 545, 546, 550, 551, 559, 560, 561, 564, 567, 572, 573, 577, 123]
+magmaItems = [539, 540, 543, 547, 553, 554, 562, 563, 565, 570, 575, 578, 122]
+
 def dishOfTheDay(seed,daysPlayed,steps,rand=None):
     #random is initialised before daysPlayed is incremented
     localDaysPlayed = daysPlayed - 1;
     if rand == None:
         rand = CSRandomLite(int(seed/100) + localDaysPlayed * 10 + 1 + steps)
-    dayOfMonth = ((localDaysPlayed-1) % 28) + 1
+    dayOfMonth = 0
+    if localDaysPlayed > 0:
+        dayOfMonth = ((localDaysPlayed-1) % 28) + 1
   #  for index in range(100):
   #      print( str( min(.10, rand.Next(-100, 101) / 1000) ) )
     for index in range(dayOfMonth):
@@ -20,23 +27,28 @@ def dishOfTheDay(seed,daysPlayed,steps,rand=None):
     rand.Sample(); #Object constructor
     return dish,number
 
-def dailyLuck(seed,daysPlayed,steps,rand=None):
+def dailyLuck(seed,daysPlayed,steps,hasFriends=False,rand=None):
     if rand == None:
         #random is initialised before daysPlayed is incremented
         rand = CSRandomLite(int(seed/100) + (daysPlayed - 1) * 10 + 1 + steps)
         dishOfTheDay(seed,daysPlayed,steps,rand)
 
-    #rand.Sample(); #Friendship
-    #rand.Sample(); #Friendship mail
+    if hasFriends:
+        rand.Sample(); #Friendship
+        rand.Sample(); #Friendship mail
     rand.Sample(); #Rarecrow society
     return min(.10, rand.Next(-100, 101) / 1000)
 
-def weatherTomorrow(seed,daysPlayed,steps,weatherToday=0,rand=None):
+def weatherTomorrow(seed,daysPlayed,steps,weatherToday=0,hasFriends=False,rand=None,version="1.5"):
     if rand == None:
         #random is initialised before daysPlayed is incremented
         rand = CSRandom(int(seed/100) + (daysPlayed - 1) * 10 + 1 + steps)
         dishOfTheDay(seed,daysPlayed,steps,rand)
-        dailyLuck(seed,daysPlayed,steps,rand)
+        dailyLuck(seed,daysPlayed,steps,hasFriends,rand)
+
+    #Ginger isle
+    if version == "1.5":
+        rand.Sample();
 
     if weatherToday == 2:
         num = rand.Next(16,64)
@@ -105,25 +117,6 @@ def oneTimeRandomGetLong(a,b,c,d):
 def giantCropAmount(seed,daysPlayed,x,y):
     rand = CSRandomLite(seed + daysPlayed + x*7 + y*11)
     return rand.Next(15,22)
-
-def monsterFloor(seed,daysPlayed,level):
-    if level % 5 == 0:
-        return False
-    if level % 40 < 5:
-        return False
-    if level % 40 > 30:
-        return False
-    if level % 40 == 19:
-        return False
-
-    rand = CSRandomLite(int(seed/2)+daysPlayed+level*100)
-    return rand.Sample() < 0.044
-
-def doesSeedHaveMonsterFloorMines(seed,daysPlayed,deepestFloor):
-    for floor in range(1,deepestFloor):
-        if monsterFloor(seed,daysPlayed,floor):
-            return True
-    return False
 
 def unusualDarkFloor(seed,daysPlayed,level):
     if level % 10 == 0:
@@ -216,7 +209,23 @@ def nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4")
                 if case == 4:
                     return (386,initialStack//2 +1)
     else:
-        return ("Mineral",1)
+        geodeSet = [];
+        if geodeType == "Omni":
+            geodeSet = omniItems
+        if geodeType == "Geode":
+            geodeSet = geodeItems
+        if geodeType == "Frozen":
+            geodeSet = frozenItems
+        if geodeType == "Magma":
+            geodeSet = magmaItems
+
+        item = (geodeSet[rand.Next(len(geodeSet))],1)
+
+        if geodeType == "Omni":
+            if rand.Sample() < 0.008 and geodesCracked > 15:
+                item = (74, 1)
+
+        return item
 
 def nextGeodeItemName(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4"):
     result = nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel,version)
@@ -258,7 +267,7 @@ def uniqueKrobusStock(seed,daysPlayed):
     return None
 
 
-def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False,recipesKnown=1,mineFloor=0):
+def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False,recipesKnown=1,mineFloor=0,desert=False):
     season = (day-1) // 28 % 4
     rand = CSRandom(gameID + day + seedAdd)
     source = [68, 66, 78, 80, 86, 152, 167, 153, 420]
@@ -266,6 +275,8 @@ def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False,rec
         source.extend([62,70,72,84,422])
     if forQuest and mineFloor > 80:
         source.extend([64,60,82])
+    if desert:
+        source.extend([88,90,164,165])
     if furnace:
         source.extend([334,335,336,338])
     source.extend({
@@ -295,7 +306,7 @@ def fairyCropIndex(seed,days,numberOfHoeDirts=0):
         return rand.Sample()
     return rand.Next(numberOfHoeDirts)
 
-def totalHarvest(seed,chanceForExtra,level=0,fert=0):
+def totalHarvest(seed,chanceForExtra,level=0,fert=0,dailyLuck=0.0,LuckLevel=0):
     num1 = 1
     rand = CSRandomLite(seed)
     num3 = 0.2 * (level / 10.0) + 0.2 * fert * ((level + 2.0) / 12.0) + 0.01;
@@ -306,7 +317,7 @@ def totalHarvest(seed,chanceForExtra,level=0,fert=0):
     if chanceForExtra > 0:
         while rand.Sample() < chanceForExtra:
             num1 = num1 +1
-    if rand.Sample() < 9.99999974737875E-05:
+    if rand.Sample() < 9.99999974737875E-05 + dailyLuck/1200 + LuckLevel/1500:
         num1 = num1 * 2
 
     return num1
@@ -319,9 +330,10 @@ def test14GiantCrops(seed,days,xRange,yRange):
                     print(str(x)+","+str(y)+" day: "+str(day))
 
 def findBestHarvest():
-    for seed in range(3582582,2147483648):
-        num = totalHarvest(seed,0.2)
-        if num > 12:
+    #8820192
+    for seed in range(1000010000):
+        num = totalHarvest(seed,0.2,level=10,fert=2,dailyLuck=0.1,LuckLevel=5)
+        if num > 19:
             print(str(seed) + " " + str(num))
 def summer2potatodrops():
     for seed in range(611235816,611235816+79*7+64*11+28):
@@ -340,7 +352,7 @@ def printPotatoSpots(seed,day):
         for x in range(57,69):
             print(str(x)+","+str(y)+" harvest: "+ str(totalHarvest(seed+day+x*7+y*11,0.2)))
 
-def checkMinesSpot(seed, ladder=False):
+def checkMinesSpotCondensed(seed, ladder=False):
     objects = []
     r = CSRandomLite(seed)
     r.Sample()
@@ -362,11 +374,145 @@ def checkMinesSpot(seed, ladder=False):
 
     return objects
 
+def checkMinesSpot(seed,floor,x,y, ladder=False):
+    return checkMinesSpotCondensed(x*1000 + y + floor + int(seed/2),ladder)
+
 def checkAllMinesSpots():
     for seed in range(773295512,2147483647,2):
-        objects = checkMinesSpot(seed)
+        objects = checkMinesSpotCondensed(seed)
         if len(objects) == 4 and 380 in objects:
             print(seed)
+
+def geodeTest():
+    seed = 1
+    for i in range(1,10):
+        print(nextGeodeItemName(seed,i,"Omni",version="1.5"))
+
+def rainCheck():
+    seed = 758980005
+
+    steps = range(13,48)
+
+    days = range(2,20)
+
+    for step in steps:
+        print("Step: " + str(step))
+        for day in days:
+            print("day: " + str(day) + " " + str(weatherTomorrow( seed,day,step )))
+
+def remixedMinesChest(seed, floor):
+    items = []
+    if floor == 10:
+        items = [("Boots",506),("Boots",507),("MeleeWeapon",12),("MeleeWeapon",17),("MeleeWeapon",22),("MeleeWeapon",31)]
+    elif floor == 20:
+        items = [("MeleeWeapon",11),
+                ("MeleeWeapon",24),
+                ("MeleeWeapon",20),
+                ("Ring",517),
+                ("Ring",519)]
+    elif floor == 50:
+        items = [("Boots",509),
+                ("Boots",510),
+                ("Boots",508),
+                ("MeleeWeapon",1),
+                ("MeleeWeapon",43)]
+    elif floor == 60:
+        items = [("MeleeWeapon",21),
+                ("MeleeWeapon",44),
+                ("MeleeWeapon",6),
+                ("MeleeWeapon",18),
+                ("MeleeWeapon",27)]
+    elif floor == 80:
+        items = [("Boots",512),
+                ("Boots",511),
+                ("MeleeWeapon",10),
+                ("MeleeWeapon",7),
+                ("MeleeWeapon",46),
+                ("MeleeWeapon",19)]
+    elif floor == 90:
+        items = [("MeleeWeapon",8),
+                ("MeleeWeapon",52),
+                ("MeleeWeapon",45),
+                ("MeleeWeapon",5),
+                ("MeleeWeapon",60)]
+    elif floor == 110:
+        items = [("Boots",514),
+                ("Boots",878),
+                ("MeleeWeapon",50),
+                ("MeleeWeapon",28)]
+
+    rand = CSRandomLite((seed*512 + floor))
+
+    return items[(rand.Next(len(items)))]
+
+def enchantment(seed,type,times=0,previousEnchantments=[]):
+    enchantments = []
+    if type == "Weapon":
+        enchantments = ['Artful', 'Bug Killer', 'Vampiric', 'Crusader', 'Haymaker']
+
+    for previous in previousEnchantments:
+        if previous in enchantments:
+            enchantments.remove(previous)
+
+    rand = CSRandomLite(seed + times)
+
+    return enchantments[(rand.Next(len(enchantments)))]
+
+def monsterFloor(seed,daysPlayed,level,version="1.5"):
+    if level % 5 == 0:
+        return False
+    if level % 40 < 5:
+        return False
+    if level % 40 > 30:
+        return False
+    if level % 40 == 19:
+        return False
+
+    if version=="1.3":
+        rand = CSRandomLite(int(seed/2)+daysPlayed+level)
+    else:
+        rand = CSRandomLite(int(seed/2)+daysPlayed+level*100)
+    return rand.Sample() < 0.044
+
+def doesSeedHaveMonsterFloorMines(seed,daysPlayed,deepestFloor):
+    for floor in range(1,deepestFloor):
+        if monsterFloor(seed,daysPlayed,floor):
+            return True
+    return False
+
+def isMushroomFloor(seed,day,floor,version="1.5"):
+	if (floor % 5 == 0):
+		return False
+
+	if monsterFloor(seed,day,floor,version):
+		return False
+	
+	if False: 
+        #(rng.Sample() < 0.044 && save.quarryUnlocked && floor % 40 > 1 ):
+		#if (rng.Sample() < 0.25):
+		#	quarryLevel.push(mineLevel + '*');
+		#else:
+		#	quarryLevel.push(mineLevel);
+		#skipMushroomCheck = true;
+		return False
+	
+	if version=="1.3":
+		rng = CSRandomLite(int(seed/2)+floor+day)
+	else:
+		rng = CSRandomLite(day * floor + (4 * floor) + seed // 2);
+	if (rng.Sample() < 0.3 and floor > 2):
+		rng.Sample()
+	rng.Sample()
+	if (rng.Sample() < 0.035 and floor > 80):
+		return True
+	
+def forageQuality(seed,day,x,y,forageLevel):
+    r = CSRandomLite(seed//2 + day + x + y*777)
+    if r.Sample() < forageLevel / 30:
+        return "Gold"
+
+    if r.Sample() < forageLevel / 15:
+        return "Silver"
 
 if __name__ == '__main__':
     #test14GiantCrops(1165064550,range(42,50),range(35,52 ),range(44,52 ));
@@ -378,19 +524,9 @@ if __name__ == '__main__':
     #findBestHarvest()
     #checkAllMinesSpots()
 
-    for seed in range(262832051,263134451):
-        #if not dishOfTheDay(seed,1,0)[0] == 213:
-        #    continue;
+    #rainCheck()
 
-        if not TrashCans.checkSpecificTrash(seed,1,5) == "DishOfTheDay":
-            continue;
+    beach = Location.createBeach();
 
-        if not TrashCans.checkSpecificTrash(seed,1,3) == 535:
-            continue
-
-        item = nextGeodeItem(seed,0,"Geode")
-        if not item[0] == 378 or item[1] < 10:
-            continue
-
-        print(seed)
+    
             
