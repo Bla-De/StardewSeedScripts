@@ -18,7 +18,7 @@ seasonDict = {0:'Spring', 1:'Summer', 2:'Fall', 3:'Winter'}
 def randomItemFromSeason(gameID, day, seedAdd, furnace=False,mineFloor=0,desert=False):
 	return SeedUtility.randomItemFromSeason(gameID, day, seedAdd, furnace,mineFloor=mineFloor,desert=desert)
 
-def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", returnMinLuck=False,minesFloor=0,desert=False):
+def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", returnMinLuck=False,minesFloor=0,desert=False,cansChecked=0):
 	if version == "1.4":
 		rand = CSRandom(int(gameID / 2) + day + 777 + index * 77)
 		num2 = rand.Next(0,100)
@@ -27,13 +27,24 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", re
 		num2 = rand.Next(0,100)
 		for index2 in range(num2):
 			rand.Sample()
-		#rand.Sample()
-		#rand.Sample()
 	else:
 		rand = CSRandomLite(int(gameID/2) + day + 777 + index)
-	result = rand.Sample()
-	if result < luck + 0.2:
-		minLuck = result - 0.2
+		
+	mega = False
+	doubleMega = False
+	if cansChecked > 20:
+		mega = rand.Sample() < 0.01
+		doubleMega = rand.Sample() < 0.002
+
+	if doubleMega:
+		return "Hat",-0.1
+	if not mega:
+		result = rand.Sample()
+	if mega or result < luck + 0.2:
+		if mega:
+			minLuck = -0.1
+		else:
+			minLuck = result - 0.2
 		r = rand.Next(10)
 		if r == 6:
 			ps = randomItemFromSeason(gameID, day, x*653+y*777, furnace,minesFloor,desert)
@@ -85,22 +96,22 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", re
 		return None,None
 	return None
 
-def checkAllTrash(gameID, day, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False):
+def checkAllTrash(gameID, day, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False,cansChecked=0):
 	results = []
 	for i in range(8):
-		item = checkSpecificTrash(gameID, day, i, furnace, luck, version,returnMinLuck,minesFloor,desert)
+		item = checkSpecificTrash(gameID, day, i, furnace, luck, version,returnMinLuck,minesFloor,desert,cansChecked)
 		if not item == None:
 			results.extend([item])
 	return results
 
-def checkSpecificTrash(gameID, day, i, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False):
+def checkSpecificTrash(gameID, day, i, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False,cansChecked=0):
 	can = GarbageLocations[i]
-	return checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version,returnMinLuck,minesFloor,desert)
+	return checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version,returnMinLuck,minesFloor,desert,cansChecked)
 
-def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4",desert=False):
+def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4",desert=False,cansChecked=0):
 	results = []
 	for i in cans:
-		item = checkSpecificTrash(gameID, day, i, furnace, luck, version,desert=desert)
+		item = checkSpecificTrash(gameID, day, i, furnace, luck, version,desert=desert,cansChecked=cansChecked)
 		if not item == None:
 			results.extend([item])
 	return results
