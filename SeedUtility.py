@@ -6,6 +6,8 @@ omniItems = [538, 542, 548, 549, 552, 555, 556, 557, 558, 566, 568, 569, 571, 57
 geodeItems = [538, 542, 548, 549, 552, 555, 556, 557, 558, 566, 568, 569, 571, 574, 576, 121]
 frozenItems = [541, 544, 545, 546, 550, 551, 559, 560, 561, 564, 567, 572, 573, 577, 123]
 magmaItems = [539, 540, 543, 547, 553, 554, 562, 563, 565, 570, 575, 578, 122]
+troveItems = [100, 101, 103, 104, 105, 106, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 166, 373, 797]
+
 
 def dishOfTheDay(seed,daysPlayed,steps,rand=None):
     #random is initialised before daysPlayed is incremented
@@ -137,7 +139,7 @@ def doesSeedHaveUnusualDarkFloor(seed,daysPlayed,deepestFloor):
     return False
 
 
-def nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4"):
+def nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4",hasCoconutHat=False):
     
     rand = CSRandomLite(geodesCracked + int(seed / 2))
 
@@ -152,7 +154,28 @@ def nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4")
     if version == "1.5":
         rand.Sample() #QI beans
 
-    if rand.Sample() < 0.5:
+    if geodeType == "Coconut":
+         if (rand.Sample() < 0.05 and not hasCoconutHat):
+                return ("Hat",1);
+         case = rand.Next(7)
+         
+         if case == 0:
+             return (69, 1)
+         if case == 1:
+             return (835, 1)
+         if case == 2:
+             return (833, 5)
+         if case == 3:
+             return (831, 5)
+         if case == 4:
+             return (820, 1)
+         if case == 5:
+             return (292, 1)
+         if case == 6:
+             return (386, 5)
+            
+
+    if geodeType != "Trove" and rand.Sample() < 0.5:
         initialStack = rand.Next(3) * 2 + 1
         if rand.Sample() < 0.1:
             initialStack = 10
@@ -218,6 +241,8 @@ def nextGeodeItem(seed,geodesCracked,geodeType,deepestMineLevel=0,version="1.4")
             geodeSet = frozenItems
         if geodeType == "Magma":
             geodeSet = magmaItems
+        if geodeType == "Trove":
+            geodeSet = troveItems
 
         item = (geodeSet[rand.Next(len(geodeSet))],1)
 
@@ -352,15 +377,21 @@ def printPotatoSpots(seed,day):
         for x in range(57,69):
             print(str(x)+","+str(y)+" harvest: "+ str(totalHarvest(seed+day+x*7+y*11,0.2)))
 
-def checkMinesSpotCondensed(seed, ladder=False):
+def checkMinesSpotCondensed(seed, ladder=False,geologist=False):
     objects = []
     r = CSRandomLite(seed)
     r.Sample()
     if not ladder:
         r.Sample()
+    if geologist:
+        r.Sample()
     if r.Sample() < 0.022:
+        if geologist and r.Sample() < 0.5:
+            objects.extend([535])
         objects.extend([535])
     if r.Sample() < 0.005:
+        if geologist and r.Sample() < 0.5:
+            objects.extend([749])
         objects.extend([749])
     if r.Sample() < 0.05:
         r.Sample()
@@ -374,13 +405,13 @@ def checkMinesSpotCondensed(seed, ladder=False):
 
     return objects
 
-def checkMinesSpot(seed,floor,x,y, ladder=False):
-    return checkMinesSpotCondensed(x*1000 + y + floor + int(seed/2),ladder)
+def checkMinesSpot(seed,floor,x,y, ladder=False,geologist=False):
+    return checkMinesSpotCondensed(x*1000 + y + floor + int(seed/2),ladder,geologist)
 
 def checkAllMinesSpots():
-    for seed in range(773295512,2147483647,2):
-        objects = checkMinesSpotCondensed(seed)
-        if len(objects) == 4 and 380 in objects:
+    for seed in range(2147483647):
+        objects = checkMinesSpotCondensed(seed,False,True)
+        if len(objects) == 6 and 380 in objects:
             print(seed)
 
 def geodeTest():
@@ -500,10 +531,13 @@ def isMushroomFloor(seed,day,floor,version="1.5"):
 		rng = CSRandomLite(int(seed/2)+floor+day)
 	else:
 		rng = CSRandomLite(day * floor + (4 * floor) + seed // 2);
-	if (rng.Sample() < 0.3 and floor > 2):
+	num = rng.Sample()
+	if (num < 0.3 and floor > 2):
 		rng.Sample()
 	rng.Sample()
-	if (rng.Sample() < 0.035 and floor > 80):
+    
+	num = rng.Sample()
+	if (num < 0.035 and floor > 80):
 		return True
 	
 def forageQuality(seed,day,x,y,forageLevel):
@@ -514,19 +548,10 @@ def forageQuality(seed,day,x,y,forageLevel):
     if r.Sample() < forageLevel / 15:
         return "Silver"
 
+
+
 if __name__ == '__main__':
-    #test14GiantCrops(1165064550,range(42,50),range(35,52 ),range(44,52 ));
-    #printGiantCropHarvest(1165064550,[[50,47,53]],53)
-    #findMine50Seed();
-    #print(fairyCropIndex(611235816,30))
-    #printPotatoSpots(1946946589,18)
-
-    #findBestHarvest()
-    #checkAllMinesSpots()
-
-    #rainCheck()
-
-    beach = Location.createBeach();
-
     
+
+    checkAllMinesSpots()
             
