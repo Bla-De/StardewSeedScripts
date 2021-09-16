@@ -85,22 +85,22 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", re
 		return None,None
 	return None
 
-def checkAllTrash(gameID, day, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0):
+def checkAllTrash(gameID, day, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False):
 	results = []
 	for i in range(8):
-		item = checkSpecificTrash(gameID, day, i, furnace, luck, version,returnMinLuck,minesFloor)
+		item = checkSpecificTrash(gameID, day, i, furnace, luck, version,returnMinLuck,minesFloor,desert)
 		if not item == None:
 			results.extend([item])
 	return results
 
-def checkSpecificTrash(gameID, day, i, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0):
+def checkSpecificTrash(gameID, day, i, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False):
 	can = GarbageLocations[i]
-	return checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version,returnMinLuck,minesFloor)
+	return checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version,returnMinLuck,minesFloor,desert)
 
-def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4"):
+def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4",desert=False):
 	results = []
 	for i in cans:
-		item = checkSpecificTrash(gameID, day, i, furnace, luck, version)
+		item = checkSpecificTrash(gameID, day, i, furnace, luck, version,desert=desert)
 		if not item == None:
 			results.extend([item])
 	return results
