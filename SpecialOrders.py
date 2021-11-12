@@ -60,7 +60,7 @@ def findSeed(startingDay, dayLimit, targetMission, currentAndCompleted=None, max
                     resDepth += orders1
                 if orders2:
                     resDepth += orders2
-                return [{"seed":seed, "day": res["day"], "order" : res["order"]} for res in resDepth]
+                return resDepth
             currentDay += 7
         return
 
@@ -79,9 +79,9 @@ def findSeed(startingDay, dayLimit, targetMission, currentAndCompleted=None, max
         seed += 1
 
 if __name__ == '__main__':
-    print(findSeed(57, 57, "Caroline", gingerIsland=True))
+    # print(findSeed(57, 57, "Caroline", gingerIsland=True))
 
-    #print(findSeed(57, 100, "Caroline", gingerIsland=True))
+    print(findSeed(57, 100, "Caroline", gingerIsland=True))
 
 
 def __test(checkSpecialOrders):
