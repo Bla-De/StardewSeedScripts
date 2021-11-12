@@ -68,11 +68,12 @@ def findSeed(startingDay, dayLimit, targetMission, currentAndCompleted=None, max
         return
     if not currentAndCompleted:
         currentAndCompleted = []
+    actualStartingDay = 7 * int(startingDay / 7) + 1
     seed = 0
     while 1:
         if seed % 10000 == 1:
             print(seed - 1)
-        seed_res = _rec_findSeed(startingDay, currentAndCompleted, maxDepth)
+        seed_res = _rec_findSeed(actualStartingDay, currentAndCompleted, maxDepth)
         if seed_res:
             print(seed_res)
         seed += 1
