@@ -37,7 +37,9 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", re
 		doubleMega = rand.Sample() < 0.002
 
 	if doubleMega:
-		return "Hat",-0.1
+		if returnMinLuck:
+			return "Hat",-0.1
+		return "Hat"
 	if not mega:
 		result = rand.Sample()
 	if mega or result < luck + 0.2:
@@ -117,25 +119,28 @@ def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4",desert
 	return results
 
 if __name__ == '__main__':
-	import sys
-	if len(sys.argv) >= 2:
-		gameID = int(sys.argv[1])
-	else:
-		gameID = 2342486
-	print(gameID)
-	days = [33]
-	for day in days:
-		flag = False
-		Cans = dayToYSD(day) + "\n"
-		for i in range(8):
-			can = GarbageLocations[i]
-			item,luck = checkTrash(gameID,day,i,can[0][0],can[0][1],True,0.10,"1.4",True)
-			if item is not None:
-				flag = True
-				Cans = Cans + ("\t %s : %s\n" % (can[1],SeedUtility.getItemFromIndex(item)+ ", Minimum luck: "+str(luck) ))
-		if flag:
-			print(Cans)
 
-	items = checkAllTrash(gameID,33,True,0.1,"1.4")
-	print(items)
-	input()
+	print(checkSpecificTrash(170579501,188,1,True,0.091,"1.4",False,121,True,21))
+	if False:
+		import sys
+		if len(sys.argv) >= 2:
+			gameID = int(sys.argv[1])
+		else:
+			gameID = 170579501
+		print(gameID)
+		days = [188]
+		for day in days:
+			flag = False
+			Cans = dayToYSD(day) + "\n"
+			for i in range(8):
+				can = GarbageLocations[i]
+				item,luck = checkTrash(gameID,day,i,can[0][0],can[0][1],True,0.10,"1.4",True)
+				if item is not None:
+					flag = True
+					Cans = Cans + ("\t %s : %s\n" % (can[1],SeedUtility.getItemFromIndex(item)+ ", Minimum luck: "+str(luck) ))
+			if flag:
+				print(Cans)
+
+		items = checkAllTrash(gameID,33,True,0.1,"1.4")
+		print(items)
+		input()

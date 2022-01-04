@@ -296,9 +296,9 @@ def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False,rec
     season = (day-1) // 28 % 4
     rand = CSRandom(gameID + day + seedAdd)
     source = [68, 66, 78, 80, 86, 152, 167, 153, 420]
-    if forQuest and mineFloor > 40:
+    if mineFloor > 40:
         source.extend([62,70,72,84,422])
-    if forQuest and mineFloor > 80:
+    if mineFloor > 80:
         source.extend([64,60,82])
     if desert:
         source.extend([88,90,164,165])
@@ -321,6 +321,8 @@ def randomItemFromSeason(gameID, day, seedAdd, furnace=False, forQuest=False,rec
 def getItemFromIndex(index):
     #handle being called after trashcans
     if index == "DishOfTheDay":
+        return index
+    if index == "Hat":
         return index
     return ObjectInfo[index].split('/')[0]
 
@@ -480,11 +482,17 @@ def enchantment(seed,type,times=0,previousEnchantments=[]):
     enchantments = []
     if type == "Weapon":
         enchantments = ['Artful', 'Bug Killer', 'Vampiric', 'Crusader', 'Haymaker']
+    elif type == "Hoe":
+        enchantments = ['Reaching','Generous','Archaeologist','Efficient','Swift']
 
     for previous in previousEnchantments:
         if previous in enchantments:
             enchantments.remove(previous)
 
+    rand = CSRandomLite(seed + times)
+    print(rand.Sample())
+    print(seed + times)
+    
     rand = CSRandomLite(seed + times)
 
     return enchantments[(rand.Next(len(enchantments)))]
@@ -552,6 +560,17 @@ def forageQuality(seed,day,x,y,forageLevel):
 
 if __name__ == '__main__':
     
+    seed = 360507666
 
-    checkAllMinesSpots()
+    for index in range(1,400):
+        print( nextGeodeItemName(seed, index, "Geode",120,"1.5")[0] + "%" +
+        nextGeodeItemName(seed, index, "Frozen",120,"1.5")[0] + "%" +
+        nextGeodeItemName(seed, index, "Magma",120,"1.5")[0] + "%" +
+        nextGeodeItemName(seed, index, "Omni",120,"1.5")[0] + "%" +
+        nextGeodeItemName(seed, index, "Trove",120,"1.5")[0] )
+
+    #type = "Weapon"
+    #ench = enchantment(seed,type,times=0)
+
+    #print(ench)
             
