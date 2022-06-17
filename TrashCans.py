@@ -18,9 +18,12 @@ seasonDict = {0:'Spring', 1:'Summer', 2:'Fall', 3:'Winter'}
 def randomItemFromSeason(gameID, day, seedAdd, furnace=False,mineFloor=0,desert=False):
 	return SeedUtility.randomItemFromSeason(gameID, day, seedAdd, furnace,mineFloor=mineFloor,desert=desert)
 
-def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", returnMinLuck=False,minesFloor=0,desert=False,cansChecked=0):
-	if version == "1.4":
-		rand = CSRandom(int(gameID / 2) + day + 777 + index * 77)
+def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", returnMinLuck=False,minesFloor=0,desert=False,cansChecked=0,trashSeed=0):
+	if version == "1.4" or version == "1.5":
+		if trashSeed == 0:
+			rand = CSRandomLite(int(gameID / 2) + day + 777 + index * 77)
+		else:
+			rand = CSRandomLite(trashSeed)
 		num2 = rand.Next(0,100)
 		for index2 in range(num2):
 			rand.Sample()
@@ -28,7 +31,10 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", re
 		for index2 in range(num2):
 			rand.Sample()
 	else:
-		rand = CSRandomLite(int(gameID/2) + day + 777 + index)
+		if trashSeed == 0:
+			rand = CSRandomLite(int(gameID/2) + day + 777 + index)
+		else:
+			rand = CSRandomLite(trashSeed)
 		
 	mega = False
 	doubleMega = False
@@ -106,9 +112,9 @@ def checkAllTrash(gameID, day, furnace=False, luck=0.0, version = "1.4",returnMi
 			results.extend([item])
 	return results
 
-def checkSpecificTrash(gameID, day, i, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False,cansChecked=0):
+def checkSpecificTrash(gameID, day, i, furnace=False, luck=0.0, version = "1.4",returnMinLuck=False,minesFloor=0,desert=False,cansChecked=0,trashSeed=0):
 	can = GarbageLocations[i]
-	return checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version,returnMinLuck,minesFloor,desert,cansChecked)
+	return checkTrash(gameID,day,i,can[0][0],can[0][1],furnace,luck,version,returnMinLuck,minesFloor,desert,cansChecked,trashSeed)
 
 def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4",desert=False,cansChecked=0):
 	results = []
@@ -120,7 +126,7 @@ def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4",desert
 
 if __name__ == '__main__':
 
-	print(checkSpecificTrash(170579501,188,1,True,0.091,"1.4",False,121,True,21))
+	print(checkSpecificTrash(4667992,2,5,True,0.092,"1.4",True,0,False,0))
 	if False:
 		import sys
 		if len(sys.argv) >= 2:
