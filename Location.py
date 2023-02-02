@@ -33,7 +33,7 @@ class Location():
         if daysplayed != 0:
             season = (daysplayed-1) // 28 % 4
         else:
-            season = 1
+            season = 0
         rand = CSRandomLite(int(seed // 2) +daysplayed)
         num1 = rand.Next(1, min(5, 7 - itemsLength))
         for index1 in range(num1):
@@ -82,7 +82,9 @@ class Location():
 
     def processDay(self,seed,daysplayed):
         self.items.clear();
-
+        if daysplayed < 7:
+            # GameLocation.loadObjects() (called by GameLocation::ctor)
+            self.calculateSpawns(seed, 0)
         dayOfMonth = ((daysplayed-1) % 28) + 1;
         day = dayOfMonth % 7;
         for dayOfWeek in range(day+1):
