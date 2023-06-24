@@ -47,6 +47,10 @@ class CSRandomLite():
 		if self.seed > 0x7FFFFFFF:
 			self.seed = self.seed - 0x7FFFFFFF
 		self.index = 0
+
+	def Advance(self, number):
+		self.index += number
+
 	
 	def Sample(self):
 		if self.index >= 500:
@@ -145,4 +149,11 @@ class CSRandom():
 				return int(ran*self.__sample_lr()) + minVal
 
 if __name__ == '__main__':
-	seed = -638161535
+	for seed in range(10):
+		rand = CSRandomLite(seed)
+		rand2 = CSRandomLite(seed)
+		rand.Sample()
+		rand.Sample()
+		print( rand.Sample())
+		rand2.Advance(2)
+		print(rand2.Sample())

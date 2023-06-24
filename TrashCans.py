@@ -25,11 +25,13 @@ def checkTrash(gameID,day,index,x,y,furnace=False, luck=0.0, version = "1.4", re
 		else:
 			rand = CSRandomLite(trashSeed)
 		num2 = rand.Next(0,100)
-		for index2 in range(num2):
-			rand.Sample()
+		rand.Advance(num2)
+		#for index2 in range(num2):
+		#	rand.Sample()
 		num2 = rand.Next(0,100)
-		for index2 in range(num2):
-			rand.Sample()
+		rand.Advance(num2)
+		#for index2 in range(num2):
+		#	rand.Sample()
 	else:
 		if trashSeed == 0:
 			rand = CSRandomLite(int(gameID/2) + day + 777 + index)
@@ -126,7 +128,14 @@ def checkCans(gameID, day, cans, furnace=False, luck=0.0, version = "1.4",desert
 
 if __name__ == '__main__':
 
-	print(checkSpecificTrash(4667992,2,5,True,0.092,"1.4",True,0,False,0))
+	for seed in range(1000000):
+		items = []
+		item = checkSpecificTrash(seed,29,5)
+		if item == 155:
+			print(seed)
+			break
+
+	#print(checkAllTrash(405255134,6,True,0.1,"1.4",True,115,False,0))
 	if False:
 		import sys
 		if len(sys.argv) >= 2:

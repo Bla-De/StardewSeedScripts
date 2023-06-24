@@ -21,7 +21,6 @@ seasonalIds = {
     "Beet": 284,
     "Amaranth": 300,
     "Starfruit": 268,
-    "Red Cabbage": 266,
     "Melon": 254,
     "Blueberry": 258,
     "Hot Pepper": 260,
@@ -63,7 +62,7 @@ def ParseRandomTags(data, random):
             #print('\t',data)
     return data
 
-def generate_random_bundles(seed, full=False):
+def generate_random_bundles(seed, full=False, impossibleBundles=[]):
     random = CSRandom(seed*9)
     bundleData = {}
 
@@ -79,6 +78,8 @@ def generate_random_bundles(seed, full=False):
         bundle_set = GetRandom(area_data['BundleSets'], random)
         if bundle_set != None:
             for bundle_data in bundle_set['Bundles']:
+                if bundle_data["Name"] in impossibleBundles:
+                    return None
                 selected_bundles[bundle_data['Index']] = bundle_data
 
         # build the random pool
@@ -99,6 +100,8 @@ def generate_random_bundles(seed, full=False):
                 if index_bundles:
                     selected_bundle = GetRandom(index_bundles, random)
                     random_bundle_pool.remove(selected_bundle)
+                    if selected_bundle["Name"] in impossibleBundles:
+                        return None
                     selected_bundles[i] = selected_bundle
         for key,val in selected_bundles.items():
             color = val['Color'] if 'Color' in val else 'Green'
@@ -139,7 +142,47 @@ def getAllSeasonalRequiredItems(seed, fairyBundles=[],impossibleBundles=[]):
     return requiredItems,fairyBundle
     
 if __name__ == '__main__':
-    requiredItems,fairyBundle = getAllSeasonalRequiredItems(100595633)
+    #requiredItems,fairyBundle = getAllSeasonalRequiredItems(100595633)
 
-    print(requiredItems)
-    print(fairyBundle)
+    #print(requiredItems)
+    #print(fairyBundle)
+	impossibleBundles = [       #"Spring Foraging",     #1
+                     #"Summer Foraging",     #2
+                     #"Fall Foraging",       #4
+                     #"Winter Foraging",     #8
+                     #"Construction",        #16
+                     #"Sticky",              #32
+                     #"Exotic Foraging",     #64
+                     #"Wild Medicine",       #128
+                     #"Spring Crops",        #256
+                     #"Summer Crops",        #512
+                     #"Fall Crops",          #1024
+                     #"Quality Crops",       #2048
+                     #"Rare Crops",          #4096
+                     #"Animal",              #8192
+                     #"Fish Farmer's",       #16384
+                     #"Garden",              #32768
+                     #"Artisan",             #65536
+                     #"Brewer's",            #131072
+                     #"River Fish",          #262144
+                     #"Lake Fish",           #524288
+                     #"Ocean Fish",          #1048576
+                     #"Night Fishing",       #2097152
+                     #"Crab Pot",            #4194304
+                     #"Specialty Fish",      #8388608
+                     #"Quality Fish",        #16777216
+                     #"Master Fisher's",     #33554432
+                     #"Blacksmith's",        #67108864
+                     #"Geologist's",         #134217728
+                     #"Adventurer's",        #268435456
+                     #"Treasure Hunter's",   #536870912
+                     #"Engineer's",          #1073741824
+                     #"Chef's"]              #2147483648
+                     #"Dye",                 #4294967296
+                     #"Field Research",      #8589934592
+                     "Fodder",              #17179869184
+                     #"Enchanter's",         #34359738368
+                     #"Children's",          #68719476736
+                     "Forager's",           #137438953472
+                     "Home Cook's"]         #274877906944
+	print(generate_random_bundles(304009252,False,impossibleBundles))
